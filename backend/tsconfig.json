@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "declaration": false,
+    "noEmit": false,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "types": ["node", "jest"],
+    "strict": true,
+    "esModuleInterop": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@src/*": ["src/*"],
+    }
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "node_modules"
+  ]
+}

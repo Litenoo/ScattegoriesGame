@@ -1,0 +1,23 @@
+# Use official Node.js image
+FROM node:latest
+
+# Set working directory
+WORKDIR /scattegories
+
+# Copy package.json and package-lock.json into the container
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy all files from the current context to the container
+COPY . .
+
+# Build your Vue application
+RUN npm run build
+
+# Expose the port that Vite's preview server uses (default is 4173)
+EXPOSE 4173
+
+# Command to run the application using Vite's preview server
+CMD ["npm", "run", "preview"]
