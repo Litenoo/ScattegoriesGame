@@ -13,6 +13,8 @@ RUN npm install
 # Copy all files
 COPY . .
 
+RUN npm run build
+
 WORKDIR /backend/dist
 
 # Expose the port

@@ -1,5 +1,6 @@
 <script setup>
 import Brand from "./Brand.vue";
+import socket from "../socket";
 </script>
 
 <template>
