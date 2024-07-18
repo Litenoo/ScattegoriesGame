@@ -4,7 +4,9 @@ import socket from "../socket";
 </script>
 
 <template>
-        <div class="flex justify-center items-center flex-col bg-zinc-800 shadow-xl rounded-lg pt-2 pb-2 pl-1 pr-1">
+        <div class="flex justify-center flex-col items-center
+        bg-zinc-800 shadow-xl rounded-lg
+        pt-2 pb-2 pl-1 pr-1">
             <Brand />
             <div class="flex flex-row">
                 <router-link  to="/create" class="flex items-center align-middle justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1">

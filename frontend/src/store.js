@@ -10,15 +10,7 @@ export const userData = defineStore('userData', {
 
         },
         createRoom: () => {
-            axios.post("http://localhost:3000/createRoom", {}, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': 'http://localhost:5173',
-                    'Cookie': 'sameSite=strict',
-                },
-                withCredentials: true,
-                sameSite: "strict",
-            })
+            
         }
     }
 })
