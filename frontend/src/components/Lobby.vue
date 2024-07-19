@@ -6,15 +6,16 @@ function startGame() {
 
 }
 function createGame() {
-    console.log("creating room");
-    socket.emit("createRoom");
+    const username = localStorage.getItem("username");
+    console.log("creating game with username : ", username);
+    socket.emit("createRoom", username);
 }
 
 const players = ref();
 createGame();
 
 socket.on("refreshPlayers", (playersList) => {
-    console.log("refreshingPlayers")
+    console.log("refreshingPlayers");
     players.value = playersList;
 });
 </script>
@@ -24,8 +25,16 @@ socket.on("refreshPlayers", (playersList) => {
         <span class="pb-2">Lobby</span>
         <div class="flex flex-col">
             Players List :
-            <div>
-                <div v-for="player in players"> - {{ player.username }}</div>
+            <div v-for="player in players" :key="player.username">
+
+                <span v-if="player.isAdmin">
+                    👑 {{ player.username }}
+                </span>
+
+                <span v-else>
+                    - {{ player.username }}
+                </span>
+
             </div>
             <button @click="startGame()">Start Game</button>
         </div>

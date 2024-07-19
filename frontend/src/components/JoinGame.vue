@@ -6,7 +6,7 @@ import router from "../router";
 const roomId = defineModel();
 
 function joinRoom() {
-    socket.emit("joinRoom", roomId.value)
+    socket.emit("joinRoom", roomId.value);
     router.push({path : "create"});
 }
 </script>

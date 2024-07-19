@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { raw } from 'express';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import cors from 'cors';
@@ -6,9 +6,8 @@ import randomstring from "randomstring";
 import { Server, Socket } from "socket.io";
 import { createServer } from "http";
 
-import { Room } from "./interfaces";
-import generateName from "./nameGenerator.js";
-import logger from "./logger.js";
+import { Room, Player } from "./interfaces";
+import logger from "./middleware/logger.js";
 
 const app = express();
 const server = createServer(app);
@@ -28,7 +27,6 @@ app.use(
     cors({
         origin: 'http://localhost:5173',
         methods: ['GET', 'POST'],
-        allowedHeaders: ['Content-Type'],
         credentials: true,
     }),
     session({
@@ -36,66 +34,72 @@ app.use(
         saveUninitialized: true,
         resave: false,
         cookie: {
-            secure: process.env.NODE_ENV === 'production', // Only set 'secure' to true in production for HTTPS
+            secure: false, // Only set 'secure' to true in production for HTTPS
             httpOnly: true,
         }
     }),
 );
 
-function joinRoom(socket: Socket, data : string){
-    try{
-        console.log("joinRoom : ", data);
-        const roomId = data;
+function joinRoom(socket: Socket, roomId: string, username: string, isAdmin?: boolean) {
+    try {
+        console.log("joinRoom : ", roomId, username);
+
         const room = rooms.find(room => room.id = roomId);
-        room?.players.push({username : generateName(), id : socket.id});
-        refreshPlayers(socket);
-    }catch(err){
-        logger.error("52",err);
-    }
-}
+        const user : Player = {socketId : socket.id, username: username, isAdmin: isAdmin};
 
-function createRoom(socket: Socket) {
-    try {
-        const socketId = socket.id;
-        const userData = { username: generateName(), id: socketId };
-
-        const roomId = randomstring.generate(12);
-        const date = new Date();
-        const room: Room = { id: roomId, players: [userData], created: date.getTime() };
-
-        rooms.push(room);
-        console.log("New room : ", room);
-        setTimeout(()=>{
-            refreshPlayers(socket);
-        }, 600)
-
+        if (room) {
+            room.players.push(user);
+        } else {
+            socket.emit("Error", { errorMsg: "There is no room with id you search for" });
+        }
+        refreshPlayers(socket, user);
     } catch (err) {
-        logger.error("72",err);
+        logger.error("Unexpected Error : " + err);
+        console.log(err);
     }
 }
 
-function refreshPlayers(socket: Socket) {
+function createRoom(): string | undefined {
     try {
-        const activeRoom = rooms.find(room => room.players.some(player => player.id === socket.id));
-        if (activeRoom) {
-            socket.emit("refreshPlayers", activeRoom.players);
-            activeRoom.players.forEach((player) => {
-                io.to(player.id).emit("refreshPlayers", activeRoom.players);
-            });
+        const date = new Date();
+        const roomId = randomstring.generate(12);
+
+        const room: Room = { id: roomId, players: [], created: date.getTime() };
+        rooms.push(room);
+        return room.id;
+    } catch (err) {
+        logger.error("Unexpected Error : " + err);
+        console.log(err);
+    }
+}
+
+
+function refreshPlayers(socket: Socket, user) {
+    try {
+        const room = rooms.find(room => room.players.some(player => user.socketId === player.socketId));
+        if (room) {
+            socket.emit("refreshPlayers", room.players);
+            io.to(user.socketId).emit("refreshPlayers", room.players);
         };
     } catch (err) {
-        logger.error("86", err);
+        logger.error("Unexpected Error : " + err);
+        console.log(err);
     }
 }
 
 const rooms: Room[] = [];
 
-io.on('connection', (socket) => {
+io.on('connection', (socket: Socket) => {
     console.log('User connected');
     socket.on('disconnect', () => console.log("User disconnected"));
 
-    socket.on('createRoom', () => createRoom(socket));
-    socket.on('joinRoom', (data)=> joinRoom(socket, data));
+    socket.on('createRoom', (username) => {
+        const roomId = createRoom();
+        if(roomId){
+            joinRoom(socket, roomId, username, true);
+        }
+    });
+    socket.on('joinRoom', (roomId, username) => joinRoom(socket, roomId, username));
 });
 
 

@@ -1,6 +1,25 @@
 <script setup>
+import router from "../router";
 import Brand from "./Brand.vue";
-import socket from "../socket";
+import setUserdata from "./functions/setUserData"
+
+const username = defineModel();
+
+async function commit(route){
+    let _username;
+    const localStUsrname = localStorage.getItem("username");
+
+    if(username.value){
+        _username = username.value;
+    }else if (localStUsrname){
+        _username = localStUsrname;
+    }
+
+    setUserdata(_username);
+
+    router.push(route);
+}
+
 </script>
 
 <template>
@@ -8,13 +27,14 @@ import socket from "../socket";
         bg-zinc-800 shadow-xl rounded-lg
         pt-2 pb-2 pl-1 pr-1">
             <Brand />
+            <input type="text" name="username" placeholder="Username" class="mb-5 w-2/3 bg-neutral-900 border border-1 border-zinc-400 rounded-md p-2 outline-none" v-model="username">
             <div class="flex flex-row">
-                <router-link  to="/create" class="flex items-center align-middle justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1">
+                <div class="flex items-center align-middle justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1 cursor-pointer" @click="commit('/create')">
                     Create New Room
-                </router-link>
-                <router-link to="/join" class="flex items-center justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1">
+                </div>
+                <div class="flex items-center justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1 cursor-pointer" @click="commit('/join')">
                     Join Room
-                </router-link>
+                </div>
             </div>
         </div>
 </template>

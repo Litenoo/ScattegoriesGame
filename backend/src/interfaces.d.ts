@@ -6,5 +6,6 @@ export interface Room {
 
 interface Player {
     username: string,
-    id: string,
+    socketId: string,
+    isAdmin?: boolean,
 }

@@ -5,8 +5,7 @@ import cors from 'cors';
 import randomstring from "randomstring";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import generateName from "./nameGenerator.js";
-import logger from "./logger.js";
+import logger from "./middleware/logger.js";
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
@@ -19,67 +18,72 @@ const io = new Server(server, {
 app.use(express.json(), cookieParser(), express.urlencoded({ extended: true }), cors({
     origin: 'http://localhost:5173',
     methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type'],
     credentials: true,
 }), session({
     secret: process.env.SESSION_SECRET || "session-secret",
     saveUninitialized: true,
     resave: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
+        secure: false,
         httpOnly: true,
     }
 }));
-function joinRoom(socket, data) {
+function joinRoom(socket, roomId, username, isAdmin) {
     try {
-        console.log("joinRoom : ", data);
-        const roomId = data;
+        console.log("joinRoom : ", roomId, username);
         const room = rooms.find(room => room.id = roomId);
-        room?.players.push({ username: generateName(), id: socket.id });
-        refreshPlayers(socket);
+        const user = { socketId: socket.id, username: username, isAdmin: isAdmin };
+        if (room) {
+            room.players.push(user);
+        }
+        else {
+            socket.emit("Error", { errorMsg: "There is no room with id you search for" });
+        }
+        refreshPlayers(socket, user);
     }
     catch (err) {
-        logger.error("52", err);
+        logger.error("Unexpected Error : " + err);
+        console.log(err);
     }
 }
-function createRoom(socket) {
+function createRoom() {
     try {
-        const socketId = socket.id;
-        const userData = { username: generateName(), id: socketId };
-        const roomId = randomstring.generate(12);
         const date = new Date();
-        const room = { id: roomId, players: [userData], created: date.getTime() };
+        const roomId = randomstring.generate(12);
+        const room = { id: roomId, players: [], created: date.getTime() };
         rooms.push(room);
-        console.log("New room : ", room);
-        setTimeout(() => {
-            refreshPlayers(socket);
-        }, 600);
+        return room.id;
     }
     catch (err) {
-        logger.error("72", err);
+        logger.error("Unexpected Error : " + err);
+        console.log(err);
     }
 }
-function refreshPlayers(socket) {
+function refreshPlayers(socket, user) {
     try {
-        const activeRoom = rooms.find(room => room.players.some(player => player.id === socket.id));
-        if (activeRoom) {
-            socket.emit("refreshPlayers", activeRoom.players);
-            activeRoom.players.forEach((player) => {
-                io.to(player.id).emit("refreshPlayers", activeRoom.players);
-            });
+        const room = rooms.find(room => room.players.some(player => user.socketId === player.socketId));
+        if (room) {
+            socket.emit("refreshPlayers", room.players);
+            io.to(user.socketId).emit("refreshPlayers", room.players);
         }
         ;
     }
     catch (err) {
-        logger.error("86", err);
+        logger.error("Unexpected Error : " + err);
+        console.log(err);
     }
 }
 const rooms = [];
 io.on('connection', (socket) => {
     console.log('User connected');
     socket.on('disconnect', () => console.log("User disconnected"));
-    socket.on('createRoom', () => createRoom(socket));
-    socket.on('joinRoom', (data) => joinRoom(socket, data));
+    socket.on('createRoom', (username) => {
+        const roomId = createRoom();
+        if (roomId) {
+            joinRoom(socket, roomId, username, true);
+        }
+    });
+    socket.on('joinRoom', (roomId, username) => joinRoom(socket, roomId, username));
 });
 server.listen(3000, () => {
     console.log("Server is listening on 3000");
