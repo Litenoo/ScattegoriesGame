@@ -1,11 +1,12 @@
 <script setup>
 import router from "../router";
 import Brand from "./Brand.vue";
-import setUserdata from "./functions/setUserData"
+import setUserdata from "./functions/setUserData";
+import socket from '../socket';
 
 const username = defineModel();
 
-async function commit(route){
+async function commit(route, newGame){
     let _username;
     const localStUsrname = localStorage.getItem("username");
 
@@ -14,12 +15,18 @@ async function commit(route){
     }else if (localStUsrname){
         _username = localStUsrname;
     }
-
     setUserdata(_username);
+    if(newGame){
+        createGame();
+    }
 
     router.push(route);
 }
 
+function createGame() {
+    const username = localStorage.getItem("username");
+    socket.emit("createRoom", username);
+}
 </script>
 
 <template>
@@ -29,10 +36,10 @@ async function commit(route){
             <Brand />
             <input type="text" name="username" placeholder="Username" class="mb-5 w-2/3 bg-neutral-900 border border-1 border-zinc-400 rounded-md p-2 outline-none" v-model="username">
             <div class="flex flex-row">
-                <div class="flex items-center align-middle justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1 cursor-pointer" @click="commit('/create')">
+                <div class="flex items-center align-middle justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1 cursor-pointer" @click="commit('/create', true)">
                     Create New Room
                 </div>
-                <div class="flex items-center justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1 cursor-pointer" @click="commit('/join')">
+                <div class="flex items-center justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1 cursor-pointer" @click="commit('/join', false)">
                     Join Room
                 </div>
             </div>

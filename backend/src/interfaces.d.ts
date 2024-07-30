@@ -7,5 +7,5 @@ export interface Room {
 interface Player {
     username: string,
     socketId: string,
-    isAdmin?: boolean,
+    isHost?: boolean,
 }

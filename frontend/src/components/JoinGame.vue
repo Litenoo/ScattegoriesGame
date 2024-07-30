@@ -1,13 +1,13 @@
 <script setup>
-import { defineModel } from 'vue';
 import Brand from "./Brand.vue";
 import socket from "../socket";
 import router from "../router";
-const roomId = defineModel();
+import { ref } from "vue";
+const roomId = ref();
 
 function joinRoom() {
-    socket.emit("joinRoom", roomId.value);
-    router.push({path : "create"});
+    socket.emit("joinRoom", roomId.value, localStorage.getItem("username"));
+    router.push({ path: "create" });
 }
 </script>
 
@@ -15,7 +15,7 @@ function joinRoom() {
     <div class="flex justify-center flex-col items-center 
     bg-zinc-800 shadow-xl rounded-lg 
     pt-2 pb-2 pl-1 pr-1">
-        
+
         <Brand />
 
         <span class="pb-2">Join By Id</span>

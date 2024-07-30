@@ -1,23 +1,28 @@
 <script setup>
 import socket from '../socket'
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 function startGame() {
 
 }
-function createGame() {
-    const username = localStorage.getItem("username");
-    console.log("creating game with username : ", username);
-    socket.emit("createRoom", username);
+
+function refreshPlayers(){
+    console.log("refresh playersList request sent");
+    socket.emit("refreshPlayers", socket.id);
 }
 
-const players = ref();
-createGame();
+const players = ref([]);
 
 socket.on("refreshPlayers", (playersList) => {
-    console.log("refreshingPlayers");
+    console.log("refreshingPlayers", playersList);
     players.value = playersList;
 });
+
+refreshPlayers();
+
+const hosts = computed(() => players.value.filter(player => player.isHost === true));
+const nonHosts = computed(() => players.value.filter(player => player.isHost === false));
+
 </script>
 
 <template>
@@ -25,15 +30,15 @@ socket.on("refreshPlayers", (playersList) => {
         <span class="pb-2">Lobby</span>
         <div class="flex flex-col">
             Players List :
-            <div v-for="player in players" :key="player.username">
+            <div>
 
-                <span v-if="player.isAdmin">
-                    👑 {{ player.username }}
-                </span>
+                <div v-for="host in hosts">
+                    👑 {{ host.username }}
+                </div>
 
-                <span v-else>
+                <div v-for="player in nonHosts">
                     - {{ player.username }}
-                </span>
+                </div>
 
             </div>
             <button @click="startGame()">Start Game</button>
