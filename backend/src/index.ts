@@ -88,7 +88,7 @@ function userDisconnection(socket: Socket) {
     }
 }
 
-function refreshPlayers(roomId) { //change name
+function refreshPlayers(socketId) { //change name
     try{
         const room : Room | null = rooms.find((room)=>{
             return room.players.some((player) => player.socketId === socketId);

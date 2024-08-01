@@ -74,7 +74,7 @@ function userDisconnection(socket) {
         logger.error(err);
     }
 }
-function refreshPlayers(roomId) {
+function refreshPlayers(socketId) {
     try {
         const room = rooms.find((room) => {
             return room.players.some((player) => player.socketId === socketId);
