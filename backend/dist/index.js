@@ -80,7 +80,7 @@ function refreshPlayers(socketId) {
         }) || null;
         if (room) {
             room.players.forEach((player) => {
-                io.to(player.socketId).emit("refreshPlayers", room.players);
+                io.to(player.socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });
             });
         }
     }

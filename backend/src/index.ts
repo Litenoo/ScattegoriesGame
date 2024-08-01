@@ -94,13 +94,9 @@ function refreshPlayers(socketId) { //change name
 
         if(room){
             room.players.forEach((player)=>{
-                io.to(player.socketId).emit("refreshPlayers", room.players);
+                io.to(player.socketId).emit("refreshPlayers", {roomId : room.id, playerList : room.players});
             });
         }
-
-        // if(room){
-        //     io.to(socketId).emit("refreshPlayers", room.players);
-        // }
     }catch(err){
         logger.error("Unexpected Error : ", err);
     }

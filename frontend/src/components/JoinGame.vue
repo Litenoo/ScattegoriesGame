@@ -3,7 +3,9 @@ import Brand from "./Brand.vue";
 import socket from "../socket";
 import router from "../router";
 import { ref } from "vue";
+
 const roomId = ref();
+const username = ref();
 
 function joinRoom() {
     socket.emit("joinRoom", roomId.value, localStorage.getItem("username"));
@@ -21,7 +23,7 @@ function joinRoom() {
         <span class="pb-2">Join By Id</span>
 
         <div class="flex flex-col">
-            <input type="text" name="roomId" v-model="roomId">
+            <input type="text" name="roomId" placeholder="room ID"  v-model="roomId">
             <button @click="joinRoom()">Join</button>
         </div>
     </div>
