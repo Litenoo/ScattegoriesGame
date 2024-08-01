@@ -1,4 +1,5 @@
 **/package.json
-**/mode_modules
+**/node_modules
 .env
-**letsencrypt
+**/.env
+**/letsencrypt
