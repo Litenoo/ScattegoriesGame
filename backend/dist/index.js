@@ -6,6 +6,8 @@ import randomstring from "randomstring";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import logger from "./middleware/logger.js";
+import data from './data.json' with { type: "json" };
+const rooms = data.rooms;
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
@@ -28,7 +30,6 @@ app.use(express.json(), cookieParser(), express.urlencoded({ extended: true }), 
         httpOnly: true,
     }
 }));
-const rooms = [];
 function joinRoom(socket, roomId, name, isHost) {
     try {
         const room = rooms.find(room => room.id === roomId);
@@ -52,7 +53,7 @@ function createRoom() {
     try {
         const date = new Date();
         const roomId = randomstring.generate(12);
-        const room = { id: roomId, players: [], created: date.getTime() };
+        const room = { id: roomId, players: [], created: date.getTime(), categories: [] };
         rooms.push(room);
         return room.id;
     }
@@ -73,7 +74,7 @@ function userDisconnection(socket) {
         logger.error(err);
     }
 }
-function refreshPlayers(socketId) {
+function refreshPlayers(roomId) {
     try {
         const room = rooms.find((room) => {
             return room.players.some((player) => player.socketId === socketId);

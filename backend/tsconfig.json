@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
+    "module" : "esnext",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "removeComments": true,
@@ -13,6 +14,7 @@
     "strict": true,
     "esModuleInterop": true,
     "baseUrl": "./src",
+    "resolveJsonModule": true,
     "paths": {
       "@src/*": ["src/*"],
     }

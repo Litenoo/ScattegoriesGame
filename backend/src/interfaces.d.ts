@@ -2,6 +2,7 @@ export interface Room {
     id: string,
     players: Player[],
     created: number,
+    categories : String[],
 }
 
 interface Player {

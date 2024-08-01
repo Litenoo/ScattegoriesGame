@@ -2,6 +2,7 @@
 import socket from '../socket'
 import { ref, computed } from "vue";
 import { useClipboard } from "@vueuse/core"
+import setUserData from './functions/setUserData';
 
 function startGame() {
 
@@ -9,7 +10,7 @@ function startGame() {
 
 function refreshPlayers() {
     console.log("refresh playersList request sent");
-    socket.emit("refreshPlayers", socket.id);
+    socket.emit("refreshPlayers", localStorage.getItem("roomId"));
 }
 
 function switchIdVisible(){ showRoomId.value = !showRoomId.value }
@@ -24,6 +25,7 @@ socket.on("refreshPlayers", (lobbyData) => {
     console.log("refreshingPlayers", lobbyData.playerList);
     players.value = lobbyData.playerList;
     roomId.value = lobbyData.roomId;
+    setUserData("roomId", roomId.value);
 });
 
 refreshPlayers();

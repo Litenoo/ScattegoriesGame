@@ -9,6 +9,10 @@ import { createServer } from "http";
 import { Room, Player } from "./interfaces";
 import logger from "./middleware/logger.js";
 
+import data from './data.json' with {type : "json"};
+
+const rooms: Room[] = data.rooms;
+
 const app = express();
 const server = createServer(app);
 const io = new Server(server,
@@ -40,8 +44,6 @@ app.use(
     }),
 );
 
-const rooms: Room[] = [];
-
 function joinRoom(socket: Socket, roomId: string, name: string, isHost?: boolean) {
     try {
         const room = rooms.find(room => room.id === roomId);
@@ -65,7 +67,7 @@ function createRoom(): string | undefined {
         const date = new Date();
         const roomId = randomstring.generate(12);
 
-        const room: Room = { id: roomId, players: [], created: date.getTime() };
+        const room: Room = { id: roomId, players: [], created: date.getTime(), categories: []};
         rooms.push(room);
         return room.id;
     } catch (err) {
@@ -86,7 +88,7 @@ function userDisconnection(socket: Socket) {
     }
 }
 
-function refreshPlayers(socketId) { //change name
+function refreshPlayers(roomId) { //change name
     try{
         const room : Room | null = rooms.find((room)=>{
             return room.players.some((player) => player.socketId === socketId);
@@ -124,3 +126,5 @@ io.on('connection', (socket: Socket) => {
 server.listen(3000, () => {
     console.log("Server is listening on 3000");
 });
+
+// Repair it so after clicking F5 it wont make list of players empty

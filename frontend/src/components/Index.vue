@@ -15,7 +15,7 @@ async function commit(route, newGame){
     }else if (localStUsrname){
         _username = localStUsrname;
     }
-    setUserdata(_username);
+    setUserdata("username", _username);
     if(newGame){
         createGame();
     }

@@ -1,10 +1,10 @@
-export default (username) => {
-    console.log("Trying to set username : ", username)
+export default (variable, value) => {
+    console.log("Trying to set username : ", value)
     try {
-        if (!username) {
-            username = randomName();
+        if (!value && variable === "username") {
+            value = randomName();
         }
-        localStorage.setItem("username", username);
+        localStorage.setItem(variable, value);
     } catch (err) {
         console.log(err);
     }
