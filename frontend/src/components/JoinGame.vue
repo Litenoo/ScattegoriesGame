@@ -8,7 +8,7 @@ const roomId = ref();
 const username = ref();
 
 function joinRoom() {
-    socket.emit("joinRoom", roomId.value, localStorage.getItem("username"));
+    socket.emit("joinRoom", localStorage.getItem("userId"), roomId.value, localStorage.getItem("username"), localStorage.getItem("userId"));
     router.push({ path: "create" });
 }
 </script>

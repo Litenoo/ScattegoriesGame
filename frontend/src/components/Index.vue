@@ -3,8 +3,24 @@ import router from "../router";
 import Brand from "./Brand.vue";
 import setUserdata from "./functions/setUserData";
 import socket from '../socket';
+import axios from "axios";
 
 const username = defineModel();
+
+getUserIdIfnull()
+
+function getUserIdIfnull(){
+    const userId = localStorage.getItem("userId");
+    console.log("userId equals ", userId)
+    if(!userId){
+        console.log("fetching new userId");
+        axios.get("http://localhost:3000/userId")
+        .then(response =>{
+            console.log("setting userId to : ", response.data);
+            localStorage.setItem("userId", response.data);
+        })
+    }
+}
 
 async function commit(route, newGame){
     let _username;
@@ -25,7 +41,7 @@ async function commit(route, newGame){
 
 function createGame() {
     const username = localStorage.getItem("username");
-    socket.emit("createRoom", username);
+    socket.emit("createRoom", localStorage.getItem("userId"), username);
 }
 </script>
 
