@@ -1,16 +1,15 @@
 import logger from "./middleware/logger.js";
 import randomstring from "randomstring";
 import data from './data.json' with { type: "json" };
-import { io } from "./index.js";
+import { io } from "./app.js";
 const rooms = data.rooms;
 export function joinRoom(socket, userId, roomId, name, isHost) {
     try {
         const room = rooms.find(room => room.id === roomId);
         const user = { userId: userId, socketId: socket.id, username: name, isHost: isHost };
-        console.log("Trying to joinRoom. roomId : ", roomId, "username :", name, "isHost :", isHost, "room :", room);
         if (room) {
             room.players.push(user);
-            refreshPlayers(userId);
+            refreshPlayers(userId, socket.id);
         }
         else {
             socket.emit("Error", { errorMsg: "There is no room with id you search for" });
@@ -51,8 +50,9 @@ export function refreshPlayers(userId, socketId) {
             if (room) {
                 room.players.forEach((player) => {
                     console.log("player in that room : ", player.username);
-                    io.to(socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });
+                    io.to(player.socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });
                 });
+                io.to(socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });
             }
         }
     }

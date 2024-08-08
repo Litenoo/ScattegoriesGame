@@ -1,24 +1,21 @@
-import logger from "./middleware/logger.js";
+import logger from "./middleware/logger";
 import randomstring from "randomstring";
 
-import data from './data.json' with {type: "json"};
 
 import { Room, Player } from "./interfaces";
 import { Socket } from "socket.io";
-import { io } from "./index.js"
+import { io } from "./app";
 
-const rooms: Room[] = data.rooms;
+const rooms: Room[] = [];
 
 export function joinRoom(socket: Socket, userId: string, roomId: string, name: string, isHost?: boolean) {
     try {
         const room = rooms.find(room => room.id === roomId);
         const user: Player = { userId: userId, socketId: socket.id, username: name, isHost: isHost };
 
-        console.log("Trying to joinRoom. roomId : ", roomId, "username :", name, "isHost :", isHost, "room :", room);
-
         if (room) {
             room.players.push(user);
-            refreshPlayers(userId);
+            refreshPlayers(userId, socket.id);
         } else {
             socket.emit("Error", { errorMsg: "There is no room with id you search for" });
         }
@@ -26,6 +23,7 @@ export function joinRoom(socket: Socket, userId: string, roomId: string, name: s
         logger.error("Unexpected Error : " + err);
     }
 }
+
 export function createRoom(): string | undefined {
     try {
         const date = new Date();
@@ -39,7 +37,7 @@ export function createRoom(): string | undefined {
     }
 }
 
-export function userDisconnection(socket: Socket) {
+export function userDisconnection(socket: Socket) { //think about deleteting player after delay
     try {
         console.log("Player Disconnected !");
     } catch (err) {
@@ -60,30 +58,12 @@ export function refreshPlayers(userId: string, socketId) { //it is for one playe
             if (room) {
                 room.players.forEach((player) => {
                     console.log("player in that room : ", player.username)
-                    io.to(socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players }); //using socket id after it expires
+                    io.to(player.socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players }); //using socket id after it expires
                 });
+                io.to(socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });
             }
         }
-
     } catch (err) {
         logger.error("Unexpected Error : ", err);
     }
 }
-
-// Check if players socket id saved in array is acctual anytime
-
-
-/*
-Issue #1
-
-After refresh user sends disconnection request and being deleted from the array of room players.
-
-The issue is caused because it is After the deletion of user from room.
-
-How to resolve it ?
-
-1.  Put info about room which user has joined in the browsers localstorage may be cumbersome
-
-2.  Do not delete user from the playerList of the roomn may be cumbersome but not as bad as 1.
-
- */
