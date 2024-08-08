@@ -5,11 +5,10 @@ import router from "../router";
 import { ref } from "vue";
 
 const roomId = ref();
-const username = ref();
 
 function joinRoom() {
     socket.emit("joinRoom", localStorage.getItem("userId"), roomId.value, localStorage.getItem("username"), localStorage.getItem("userId"));
-    router.push({ path: "create" });
+    router.push({ path: "lobby" });
 }
 </script>
 

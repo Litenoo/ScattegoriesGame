@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "module" : "ESNext",
+    "module" : "CommonJS",
     "target": "ESNext",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "removeComments": true,
     "preserveConstEnums": true,
     "declaration": false,
-    "noEmit": true,
+    "noEmit": false,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
     "rootDir": "src",
@@ -16,7 +16,7 @@
     "baseUrl": "./src",
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": false,
     "types": ["jest", "node"],
     "typeRoots": ["./types", "./node_modules/@types"],
     "paths": {

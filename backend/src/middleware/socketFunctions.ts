@@ -1,8 +1,8 @@
-import logger from "./middleware/logger";
+import logger from "./logger";
 import randomstring from "randomstring";
 
 
-import { Room, Player } from "./interfaces";
+import { Room, Player } from "../interfaces";
 import { Socket } from "socket.io";
 import { io } from "./app";
 

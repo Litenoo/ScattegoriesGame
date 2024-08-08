@@ -5,7 +5,7 @@ import cors from 'cors';
 import randomstring from "randomstring";
 import { Server, Socket } from "socket.io";
 import { createServer } from "http";
-import logger from "./middleware/logger.js";
+import logger from "./logger.js";
 
 import { joinRoom, createRoom, userDisconnection, refreshPlayers } from "./socketFunctions.js";
 
@@ -43,6 +43,7 @@ app.use(
 app.get("/userID", (req, res) => {
    try{
       const userId = randomstring.generate(12);
+      res.status(200);
       res.send(userId);
    }catch(err){
       logger.error("Error generating user Id: ", err);
@@ -52,7 +53,6 @@ app.get("/userID", (req, res) => {
 
 
 io.on('connection', (socket: Socket) => {
-   io.to(socket.id).emit("setUserId", randomstring.generate(12));
 
    socket.on('disconnect', () => userDisconnection(socket));
 
@@ -71,6 +71,16 @@ io.on('connection', (socket: Socket) => {
    socket.on('joinRoom', (userId, roomId, username) => joinRoom(socket, userId, roomId, username, false));
 });
 
+function causeError(){
+   try{
+      console.log("causing error");
+      throw "error";
+   }catch(err){
+      logger.error(err);
+   }
+}
+
+causeError();
 
 
-// Repair it so after clicking F5 it wont make list of players empty
+//tests
