@@ -1,7 +1,6 @@
 import logger from "./logger";
 import randomstring from "randomstring";
 
-
 import { Room, Player } from "../interfaces";
 import { Socket } from "socket.io";
 import { io } from "./app";
@@ -39,7 +38,7 @@ export function createRoom(): string | undefined {
 
 export function userDisconnection(socket: Socket) { //think about deleteting player after delay
     try {
-        console.log("Player Disconnected !");
+        // console.log("Player disconnected, socketId : ", socket.id);
     } catch (err) {
         logger.error(err);
     }

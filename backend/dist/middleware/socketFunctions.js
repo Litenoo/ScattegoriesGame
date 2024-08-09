@@ -40,7 +40,6 @@ function createRoom() {
 exports.createRoom = createRoom;
 function userDisconnection(socket) {
     try {
-        console.log("Player Disconnected !");
     }
     catch (err) {
         logger_1.default.error(err);

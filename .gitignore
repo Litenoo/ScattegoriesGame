@@ -3,3 +3,4 @@
 **/letsencrypt
 *.log
 **/logs
+**/*.log

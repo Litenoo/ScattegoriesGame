@@ -1,12 +1,11 @@
 import express from 'express';
-import cookieParser from 'cookie-parser';
 import session from "express-session";
-import cors from 'cors';
 import randomstring from "randomstring";
+import cors from 'cors';
 import { Server, Socket } from "socket.io";
 import { createServer } from "http";
-import logger from "./logger.js";
 
+import logger from "./logger.js";
 import { joinRoom, createRoom, userDisconnection, refreshPlayers } from "./socketFunctions.js";
 
 const app = express();
@@ -22,7 +21,6 @@ export const io = new Server(server,
 
 app.use(
    express.json(),
-   cookieParser(),
    express.urlencoded({ extended: true }),
    cors({
       origin: 'http://localhost:5173',
@@ -51,7 +49,6 @@ app.get("/userID", (req, res) => {
    }
 });
 
-
 io.on('connection', (socket: Socket) => {
 
    socket.on('disconnect', () => userDisconnection(socket));
@@ -70,17 +67,3 @@ io.on('connection', (socket: Socket) => {
 
    socket.on('joinRoom', (userId, roomId, username) => joinRoom(socket, userId, roomId, username, false));
 });
-
-function causeError(){
-   try{
-      console.log("causing error");
-      throw "error";
-   }catch(err){
-      logger.error(err);
-   }
-}
-
-causeError();
-
-
-//tests

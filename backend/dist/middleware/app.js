@@ -5,10 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.io = exports.server = void 0;
 const express_1 = __importDefault(require("express"));
-const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express_session_1 = __importDefault(require("express-session"));
-const cors_1 = __importDefault(require("cors"));
 const randomstring_1 = __importDefault(require("randomstring"));
+const cors_1 = __importDefault(require("cors"));
 const socket_io_1 = require("socket.io");
 const http_1 = require("http");
 const logger_js_1 = __importDefault(require("./logger.js"));
@@ -22,7 +21,7 @@ exports.io = new socket_io_1.Server(exports.server, {
         credentials: true,
     }
 });
-app.use(express_1.default.json(), (0, cookie_parser_1.default)(), express_1.default.urlencoded({ extended: true }), (0, cors_1.default)({
+app.use(express_1.default.json(), express_1.default.urlencoded({ extended: true }), (0, cors_1.default)({
     origin: 'http://localhost:5173',
     methods: ['GET', 'POST'],
     credentials: true,
@@ -60,13 +59,3 @@ exports.io.on('connection', (socket) => {
     });
     socket.on('joinRoom', (userId, roomId, username) => (0, socketFunctions_js_1.joinRoom)(socket, userId, roomId, username, false));
 });
-function causeError() {
-    try {
-        console.log("causing error");
-        throw "error";
-    }
-    catch (err) {
-        logger_js_1.default.error(err);
-    }
-}
-causeError();
