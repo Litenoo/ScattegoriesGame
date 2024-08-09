@@ -7,6 +7,7 @@ export interface Room {
 
 interface Player {
     username: string,
-    socketId: string,
+    userId: string,
+    socketId: string, //Check if socket id is any needed and if it is ok to use it
     isHost?: boolean,
 }

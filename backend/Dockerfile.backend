@@ -1,24 +1,17 @@
-# Use official Node.js image
 FROM node:latest
 
-# Set working directory
 WORKDIR /backend
 
-# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
 RUN npm install
 
-# Copy all files
 COPY . .
 
 RUN npm run build
 
 WORKDIR /backend/dist
 
-# Expose the port
 EXPOSE 3000
 
-# Command to run the application
 CMD ["node", "index.js"]

@@ -7,12 +7,12 @@ function startGame() {
 
 }
 
-function refreshPlayers() {
-    console.log("refresh playersList request sent");
-    socket.emit("refreshPlayers", socket.id);
-}
-
 function switchIdVisible(){ showRoomId.value = !showRoomId.value }
+
+function refreshPlayers() {
+    console.log("refresh playersList request sent with userId = ", localStorage.getItem("userId"));
+    socket.emit("refreshPlayers", localStorage.getItem("userId"));
+}
 
 const players = ref([]);
 const roomId = ref(String);
@@ -21,7 +21,7 @@ const showRoomId = ref(false);
 const { copy } = useClipboard({ roomId })
 
 socket.on("refreshPlayers", (lobbyData) => {
-    console.log("refreshingPlayers", lobbyData.playerList);
+    console.log("refreshPlayers data received : ", lobbyData.playerList);
     players.value = lobbyData.playerList;
     roomId.value = lobbyData.roomId;
 });

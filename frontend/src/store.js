@@ -6,11 +6,5 @@ export const userData = defineStore('userData', {
         return { userId: "", roomId: "" };
     },
     actions: {
-        getUserId: () => {
-
-        },
-        createRoom: () => {
-            
-        }
     }
 })
