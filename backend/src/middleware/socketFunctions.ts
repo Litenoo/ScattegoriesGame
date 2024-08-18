@@ -5,59 +5,48 @@ import { Room, Player } from "../interfaces";
 import { Socket } from "socket.io";
 import { io } from "./app";
 
-const rooms: Room[] = [];
+const lobbies: Room[] = [];
 
 export function joinRoom(socket: Socket, userId: string, roomId: string, name: string, isHost?: boolean) {
     try {
-        const room = rooms.find(room => room.id === roomId);
+        const room = lobbies.find(room => room.id === roomId);
         const user: Player = { userId: userId, socketId: socket.id, username: name, isHost: isHost };
 
         if (room) {
             room.players.push(user);
-            refreshPlayers(userId, socket.id);
         } else {
             socket.emit("Error", { errorMsg: "There is no room with id you search for" });
         }
+        refreshPlayers(userId, socket.id);
     } catch (err) {
         logger.error("Unexpected Error : " + err);
     }
 }
 
-export function createRoom(): string | undefined {
+export function createLobby(): string | undefined {
     try {
         const date = new Date();
-        const roomId = randomstring.generate(12);
+        const lobbyId = randomstring.generate(12);
 
-        const room: Room = { id: roomId, players: [], created: date.getTime(), categories: [] };
-        rooms.push(room);
+        const room: Room = { id: lobbyId, players: [], created: date.getTime(), categories: [] };
+        lobbies.push(room);
         return room.id;
     } catch (err) {
         logger.error("Unexpected Error : " + err);
     }
 }
 
-export function userDisconnection(socket: Socket) { //think about deleteting player after delay
-    try {
-        // console.log("Player disconnected, socketId : ", socket.id);
-    } catch (err) {
-        logger.error(err);
-    }
-}
-
 export function refreshPlayers(userId: string, socketId) { //it is for one player only, chceck if it is ok ? either add for everyone in the room
     try {
-        console.log("function refreshPlayers called with userId : ", userId);
+        console.log("Refreshing players list for userId : ", userId);
         if (userId) {
-            const room: Room | null = rooms.find(room => {  //It cannot find the room by some reason.
-                return room.players.some(player => player.userId === userId);
-            }) || null;
+            const room: Room | null = findRoomByPlayerId(userId);
 
-            console.log("function refreshPlayers room found : ", room);
-
-            if (room) {
+            if (room) { //refactor
                 room.players.forEach((player) => {
-                    console.log("player in that room : ", player.username)
-                    io.to(player.socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players }); //using socket id after it expires
+                    if(player.socketId !== socketId){
+                        io.to(player.socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players }); //using socket id after it possibly expires
+                    }
                 });
                 io.to(socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });
             }
@@ -65,4 +54,19 @@ export function refreshPlayers(userId: string, socketId) { //it is for one playe
     } catch (err) {
         logger.error("Unexpected Error : ", err);
     }
+}
+
+export function startGame(userId: string) {
+    const room = findRoomByPlayerId(userId);
+
+    if (room?.players.some(player => player.userId === userId && player.isHost === true)) {
+        console.log("Accepted, starting game !");
+    }
+}
+
+function findRoomByPlayerId(userId) {
+    const room: Room | null = lobbies.find(room => {
+        return room.players.some(player => player.userId === userId);
+    }) || null;
+    return room;
 }

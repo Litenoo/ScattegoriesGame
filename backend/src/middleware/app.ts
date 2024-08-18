@@ -6,7 +6,8 @@ import { Server, Socket } from "socket.io";
 import { createServer } from "http";
 
 import logger from "./logger.js";
-import { joinRoom, createRoom, userDisconnection, refreshPlayers } from "./socketFunctions.js";
+import { joinRoom, createLobby, refreshPlayers, startGame } from "./socketFunctions.js";
+import { start } from 'repl';
 
 const app = express();
 export const server = createServer(app);
@@ -39,31 +40,39 @@ app.use(
 );
 
 app.get("/userID", (req, res) => {
-   try{
+   try {
       const userId = randomstring.generate(12);
       res.status(200);
       res.send(userId);
-   }catch(err){
+   } catch (err) {
       logger.error("Error generating user Id: ", err);
       res.status(500).send("Internal Server Error.");
    }
 });
 
 io.on('connection', (socket: Socket) => {
-
-   socket.on('disconnect', () => userDisconnection(socket));
-
-   socket.on('createRoom', (userId, username) => {
-      const roomId = createRoom();
-      if (roomId) {
-         joinRoom(socket, userId, roomId, username, true);
+   socket.on('createRoom', (userId: string, username: string) => {
+      try {
+         const roomId = createLobby();
+         if (roomId) {
+            joinRoom(socket, userId, roomId, username, true);
+         }
+      } catch (err) {
+         logger.error(err);
       }
    });
 
    socket.on("refreshPlayers", (userId) => {
-      console.log("refreshPlayers request received with userId = ", userId);
       refreshPlayers(userId, socket.id);
    });
 
-   socket.on('joinRoom', (userId, roomId, username) => joinRoom(socket, userId, roomId, username, false));
+   socket.on("startGame", (userId) => {
+      startGame(userId);
+   })
+
+   socket.on('joinRoom', (userId, roomId, username) => {
+      console.log("/joinRoom")
+      joinRoom(socket, userId, roomId, username, false);
+   })
+
 });

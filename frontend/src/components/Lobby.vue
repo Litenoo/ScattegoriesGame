@@ -4,7 +4,9 @@ import { ref, computed } from "vue";
 import { useClipboard } from "@vueuse/core"
 
 function startGame() {
-
+    const userId = localStorage.getItem("userId");
+    console.log("StartGame with id : ", userId)
+    socket.emit("startGame", userId);
 }
 
 function switchIdVisible(){ showRoomId.value = !showRoomId.value }
