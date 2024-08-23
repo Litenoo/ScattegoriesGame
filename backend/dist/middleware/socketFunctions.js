@@ -3,7 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.refreshPlayers = exports.userDisconnection = exports.createRoom = exports.joinRoom = void 0;
+exports.joinRoom = joinRoom;
+exports.createRoom = createRoom;
+exports.userDisconnection = userDisconnection;
+exports.refreshPlayers = refreshPlayers;
 const logger_1 = __importDefault(require("./logger"));
 const randomstring_1 = __importDefault(require("randomstring"));
 const app_1 = require("./app");
@@ -24,7 +27,6 @@ function joinRoom(socket, userId, roomId, name, isHost) {
         logger_1.default.error("Unexpected Error : " + err);
     }
 }
-exports.joinRoom = joinRoom;
 function createRoom() {
     try {
         const date = new Date();
@@ -37,7 +39,6 @@ function createRoom() {
         logger_1.default.error("Unexpected Error : " + err);
     }
 }
-exports.createRoom = createRoom;
 function userDisconnection(socket) {
     try {
     }
@@ -45,7 +46,6 @@ function userDisconnection(socket) {
         logger_1.default.error(err);
     }
 }
-exports.userDisconnection = userDisconnection;
 function refreshPlayers(userId, socketId) {
     try {
         console.log("function refreshPlayers called with userId : ", userId);
@@ -67,4 +67,3 @@ function refreshPlayers(userId, socketId) {
         logger_1.default.error("Unexpected Error : ", err);
     }
 }
-exports.refreshPlayers = refreshPlayers;
