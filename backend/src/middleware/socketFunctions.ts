@@ -1,68 +1,84 @@
 import logger from "./logger";
 import randomstring from "randomstring";
 
-import { Room, Player } from "../interfaces";
 import { Socket } from "socket.io";
 import { io } from "./app";
+import Player from "./Classes/Player";
+import Room from "./Classes/Room"
 
-const rooms: Room[] = [];
+const lobbies: Room[] = [];
 
-export function joinRoom(socket: Socket, userId: string, roomId: string, name: string, isHost?: boolean) {
-    try {
-        const room = rooms.find(room => room.id === roomId);
-        const user: Player = { userId: userId, socketId: socket.id, username: name, isHost: isHost };
+export function joinRoom(socket: Socket, userId: string, roomId: string, name: string, isHost = false) {
+   try {
+      const room = lobbies.find(room => room.id === roomId);
+      const player = new Player(name, userId, socket.id, isHost);
 
-        if (room) {
-            room.players.push(user);
-            refreshPlayers(userId, socket.id);
-        } else {
-            socket.emit("Error", { errorMsg: "There is no room with id you search for" });
-        }
-    } catch (err) {
-        logger.error("Unexpected Error : " + err);
-    }
+      if (room) {
+         room.players.push(player);
+      } else {
+         socket.emit("Error", { errorMsg: "There is no room with id you search for" });
+      }
+      refreshPlayers(userId, socket.id);
+   } catch (err) {
+      logger.error("Unexpected Error : " + err);
+   }
 }
 
-export function createRoom(): string | undefined {
-    try {
-        const date = new Date();
-        const roomId = randomstring.generate(12);
+export function createLobby(): string | undefined {
+   try {
+      const date = new Date();
+      const lobbyId = randomstring.generate(12);
 
-        const room: Room = { id: roomId, players: [], created: date.getTime(), categories: [] };
-        rooms.push(room);
-        return room.id;
-    } catch (err) {
-        logger.error("Unexpected Error : " + err);
-    }
+      const room: Room = new Room(lobbyId, date.getTime());
+      lobbies.push(room);
+      return room.id;
+   } catch (err) {
+      logger.error("Unexpected Error : " + err);
+   }
 }
 
-export function userDisconnection(socket: Socket) { //think about deleteting player after delay
-    try {
-        // console.log("Player disconnected, socketId : ", socket.id);
-    } catch (err) {
-        logger.error(err);
-    }
+export function refreshPlayers(userId: string, socketId: string) {
+   try {
+      console.log("Refreshing players list for userId : ", userId);
+      if (userId) {
+         const room: Room | null = findRoomByPlayerId(userId);
+         let player: Player | undefined;
+         if (room) {
+            player = findPlayerById(userId, room.players);
+         }
+
+         if (room) {
+            room.players.forEach((player) => {
+               if (player.socketId !== socketId) { //filters to avoid sending response more than once
+                  io.to(player.socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });
+               }
+            });
+            io.to(socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });
+         }
+      }
+   } catch (err) {
+      logger.error("Unexpected Error : ", err);
+   }
 }
 
-export function refreshPlayers(userId: string, socketId) { //it is for one player only, chceck if it is ok ? either add for everyone in the room
-    try {
-        console.log("function refreshPlayers called with userId : ", userId);
-        if (userId) {
-            const room: Room | null = rooms.find(room => {  //It cannot find the room by some reason.
-                return room.players.some(player => player.userId === userId);
-            }) || null;
+export function startGame(userId: string) {
+   const room = findRoomByPlayerId(userId);
 
-            console.log("function refreshPlayers room found : ", room);
+   if (room?.players.some(player => player.userId === userId && player.isHost === true)) {
+      console.log("Accepted, starting game !");
+   }
+}
 
-            if (room) {
-                room.players.forEach((player) => {
-                    console.log("player in that room : ", player.username)
-                    io.to(player.socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players }); //using socket id after it expires
-                });
-                io.to(socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });
-            }
-        }
-    } catch (err) {
-        logger.error("Unexpected Error : ", err);
-    }
+//Mulit-Usage functions :
+
+function findRoomByPlayerId(userId: string): Room | null {
+   const room: Room | null = lobbies.find(room => {
+      return room.players.some(player => player.userId === userId);
+   }) || null;
+   return room;
+}
+
+function findPlayerById(playerId: string, playersList: Player[] | null): Player | undefined {
+   const player = playersList?.find((player) => player.getUserId === playerId);
+   return player;
 }
