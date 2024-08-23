@@ -36,16 +36,16 @@ export function createLobby(): string | undefined {
     }
 }
 
-export function refreshPlayers(userId: string, socketId) { //it is for one player only, chceck if it is ok ? either add for everyone in the room
+export function refreshPlayers(userId: string, socketId) {
     try {
         console.log("Refreshing players list for userId : ", userId);
         if (userId) {
             const room: Room | null = findRoomByPlayerId(userId);
 
-            if (room) { //refactor
+            if (room) {
                 room.players.forEach((player) => {
-                    if(player.socketId !== socketId){
-                        io.to(player.socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players }); //using socket id after it possibly expires
+                    if (player.socketId !== socketId) { //filters to avoid sending response more than once
+                        io.to(player.socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });
                     }
                 });
                 io.to(socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });

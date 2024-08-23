@@ -67,6 +67,7 @@ describe("Socket.io, creating and joining room", () => {
 
    test("Creating room and joining it then works fine.", (done) => {
       try {
+         //Host player creates room and joins it
          const hostId = "hostId";
          const hostName = "tester";
 
@@ -81,7 +82,7 @@ describe("Socket.io, creating and joining room", () => {
                   isHost: true
                }
             );
-            let roomId = room.roomId;
+            let roomId = room.roomId; // In practice this is code which has to be shared between users.
 
             // Non host player joins the room:
             const guestId = "guestId";
@@ -111,12 +112,10 @@ describe("Socket.io, creating and joining room", () => {
       } catch (err) {
          done(err as Error);
       }
-   })
+   });
 });
 
-
 /**
- * 
- * There is an issue with the infinite redirection in projects code (not in test), so it redirects infinitely somewhere.
- *  It can be seen by running this test and realising that done() is called moultiple times.
+ * IMPORTANT TODO :
+ * Add to the test above two another sockets which will create second room and prove that it is not global.
  */
