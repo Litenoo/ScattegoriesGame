@@ -1,8 +1,8 @@
 export default class Player {
-    private username: string;
-    private userId: string;
-    private socketId: string;
-    private isHost: boolean;
+    readonly username: string;
+    readonly userId: string;
+    readonly socketId: string;
+    readonly isHost: boolean;
 
     constructor(username: string, userId: string, socketId: string, isHost: boolean) {
         this.username = username;

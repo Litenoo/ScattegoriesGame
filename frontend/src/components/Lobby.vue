@@ -5,16 +5,9 @@ import { useClipboard } from "@vueuse/core";
 
 import Settings from "./Settings.vue";
 
-//variables init :
-const alphabet = [
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-    'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-    'U', 'V', 'W', 'X', 'Y', 'Z'
-];
-
 function startGame() {
     const userId = localStorage.getItem("userId");
-    console.log("StartGame with id : ", userId)
+    console.log("StartGame with id : ", userId);
     socket.emit("startGame", userId);
 }
 
@@ -29,7 +22,7 @@ const players = ref([]);
 const roomId = ref(String);
 const showRoomId = ref(false);
 
-const { copy } = useClipboard({ roomId })
+const { copy } = useClipboard({ roomId });
 
 socket.on("refreshPlayers", (lobbyData) => {
     console.log("refreshPlayers data received : ", lobbyData.playerList);
