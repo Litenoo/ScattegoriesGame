@@ -46,16 +46,24 @@ app.get("/userID", (req, res) => {
     }
 });
 exports.io.on('connection', (socket) => {
-    socket.on('disconnect', () => (0, socketFunctions_js_1.userDisconnection)(socket));
     socket.on('createRoom', (userId, username) => {
-        const roomId = (0, socketFunctions_js_1.createRoom)();
-        if (roomId) {
-            (0, socketFunctions_js_1.joinRoom)(socket, userId, roomId, username, true);
+        try {
+            const roomId = (0, socketFunctions_js_1.createLobby)();
+            if (roomId) {
+                (0, socketFunctions_js_1.joinRoom)(socket, userId, roomId, username, true);
+            }
+        }
+        catch (err) {
+            logger_js_1.default.error(err);
         }
     });
     socket.on("refreshPlayers", (userId) => {
-        console.log("refreshPlayers request received with userId = ", userId);
         (0, socketFunctions_js_1.refreshPlayers)(userId, socket.id);
     });
-    socket.on('joinRoom', (userId, roomId, username) => (0, socketFunctions_js_1.joinRoom)(socket, userId, roomId, username, false));
+    socket.on("startGame", (userId) => {
+    });
+    socket.on('joinRoom', (userId, roomId, username) => {
+        console.log("/joinRoom");
+        (0, socketFunctions_js_1.joinRoom)(socket, userId, roomId, username, false);
+    });
 });

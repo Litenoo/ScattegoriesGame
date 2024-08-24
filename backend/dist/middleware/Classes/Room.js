@@ -1,10 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Room {
+    id;
+    created;
     players = [];
-    settings;
-    constructor(settings) {
-        this.settings = settings;
+    constructor(id, created) {
+        this.id = id;
+        this.created = created;
     }
     setHost(host) {
         this.players.push(host);
@@ -14,7 +16,5 @@ class Room {
             players.push(player);
         });
     }
-    set setSettings(settings) {
-        this.settings = settings;
-    }
 }
+exports.default = Room;
