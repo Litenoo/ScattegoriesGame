@@ -3,8 +3,10 @@ import randomstring from "randomstring";
 
 import { Socket } from "socket.io";
 import { io } from "./app";
+
+import Room from "./Classes/Room";
 import Player from "./Classes/Player";
-import Room from "./Classes/Room"
+import Settings from "./Classes/Settings";
 
 const lobbies: Room[] = [];
 
@@ -37,6 +39,14 @@ export function createLobby(): string | undefined {
    }
 }
 
+export function startGame(userId: string, categories: string[], settings: Settings) {
+   const room = findRoomByPlayerId(userId);
+
+   if (room?.players.some(player => player.userId === userId && player.isHost === true)) {
+      console.log("Accepted, starting game !");
+   }
+}
+
 export function refreshPlayers(userId: string, socketId: string) {
    try {
       console.log("Refreshing players list for userId : ", userId);
@@ -58,14 +68,6 @@ export function refreshPlayers(userId: string, socketId: string) {
       }
    } catch (err) {
       logger.error("Unexpected Error : ", err);
-   }
-}
-
-export function startGame(userId: string) {
-   const room = findRoomByPlayerId(userId);
-
-   if (room?.players.some(player => player.userId === userId && player.isHost === true)) {
-      console.log("Accepted, starting game !");
    }
 }
 

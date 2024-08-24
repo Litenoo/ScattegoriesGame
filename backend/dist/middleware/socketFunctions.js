@@ -5,13 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.joinRoom = joinRoom;
 exports.createLobby = createLobby;
-exports.refreshPlayers = refreshPlayers;
 exports.startGame = startGame;
+exports.refreshPlayers = refreshPlayers;
 const logger_1 = __importDefault(require("./logger"));
 const randomstring_1 = __importDefault(require("randomstring"));
 const app_1 = require("./app");
-const Player_1 = __importDefault(require("./Classes/Player"));
 const Room_1 = __importDefault(require("./Classes/Room"));
+const Player_1 = __importDefault(require("./Classes/Player"));
 const lobbies = [];
 function joinRoom(socket, userId, roomId, name, isHost = false) {
     try {
@@ -41,6 +41,12 @@ function createLobby() {
         logger_1.default.error("Unexpected Error : " + err);
     }
 }
+function startGame(userId, categories, settings) {
+    const room = findRoomByPlayerId(userId);
+    if (room?.players.some(player => player.userId === userId && player.isHost === true)) {
+        console.log("Accepted, starting game !");
+    }
+}
 function refreshPlayers(userId, socketId) {
     try {
         console.log("Refreshing players list for userId : ", userId);
@@ -62,12 +68,6 @@ function refreshPlayers(userId, socketId) {
     }
     catch (err) {
         logger_1.default.error("Unexpected Error : ", err);
-    }
-}
-function startGame(userId) {
-    const room = findRoomByPlayerId(userId);
-    if (room?.players.some(player => player.userId === userId && player.isHost === true)) {
-        console.log("Accepted, starting game !");
     }
 }
 function findRoomByPlayerId(userId) {
