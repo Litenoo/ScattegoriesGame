@@ -1,21 +1,13 @@
-<<<<<<< HEAD
 <script setup>
-=======
-<script>
 const alphabet = [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
     'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
     'U', 'V', 'W', 'X', 'Y', 'Z'
 ];
->>>>>>> oop
 
 </script>
 
 <template>
-<<<<<<< HEAD
-    <div>
-        
-=======
     <div class="flex flex-col pl-3">
         Settings
         <input type="text" placeholder="cattegory" class="m-1 p-0.5 rounded-md">
@@ -25,6 +17,5 @@ const alphabet = [
                 {{ letter }}<input type="checkbox" checked name="letter">
             </label>
         </div>
->>>>>>> oop
     </div>
 </template>

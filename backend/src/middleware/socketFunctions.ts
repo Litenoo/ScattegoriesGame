@@ -8,15 +8,15 @@ import Room from "./Classes/Room";
 import Player from "./Classes/Player";
 import Settings from "./Classes/Settings";
 
-const lobbies: Room[] = [];
+const lobbies: Room[] = []; //think about using class instead of just array.
 
-export function joinRoom(socket: Socket, userId: string, roomId: string, name: string, isHost = false) {
+export function joinRoom(socket: Socket, userId: string, roomId: string, name: string) {
    try {
       const room = lobbies.find(room => room.id === roomId);
-      const player = new Player(name, userId, socket.id, isHost);
+      const player = new Player(name, userId, socket.id, false);
 
       if (room) {
-         room.players.push(player);
+         room.join(player);
       } else {
          socket.emit("Error", { errorMsg: "There is no room with id you search for" });
       }
@@ -26,13 +26,14 @@ export function joinRoom(socket: Socket, userId: string, roomId: string, name: s
    }
 }
 
-export function createLobby(): string | undefined {
+export function createLobby(socket: Socket, host: Player): string | undefined {
    try {
       const date = new Date();
       const lobbyId = randomstring.generate(12);
 
-      const room: Room = new Room(lobbyId, date.getTime());
+      const room: Room = new Room(lobbyId, date.getTime(), host);
       lobbies.push(room);
+      refreshPlayers(host.userId, socket.id);
       return room.id;
    } catch (err) {
       logger.error("Unexpected Error : " + err);
@@ -42,7 +43,7 @@ export function createLobby(): string | undefined {
 export function startGame(userId: string, categories: string[], settings: Settings) {
    const room = findRoomByPlayerId(userId);
 
-   if (room?.players.some(player => player.userId === userId && player.isHost === true)) {
+   if (room?.playerList.some(player => player.userId === userId && player.isHost === true)) {
       console.log("Accepted, starting game !");
    }
 }
@@ -54,16 +55,16 @@ export function refreshPlayers(userId: string, socketId: string) {
          const room: Room | null = findRoomByPlayerId(userId);
          let player: Player | undefined;
          if (room) {
-            player = findPlayerById(userId, room.players);
+            player = findPlayerById(userId, room.playerList);
          }
 
          if (room) {
-            room.players.forEach((player) => {
+            room.playerList.forEach((player) => {
                if (player.socketId !== socketId) { //filters to avoid sending response more than once
-                  io.to(player.socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });
+                  io.to(player.socketId).emit("refreshPlayers", { id: room.id, players: room.playerList });
                }
             });
-            io.to(socketId).emit("refreshPlayers", { roomId: room.id, playerList: room.players });
+            io.to(socketId).emit("refreshPlayers", { id: room.id, players: room.playerList });
          }
       }
    } catch (err) {
@@ -75,12 +76,15 @@ export function refreshPlayers(userId: string, socketId: string) {
 
 function findRoomByPlayerId(userId: string): Room | null {
    const room: Room | null = lobbies.find(room => {
-      return room.players.some(player => player.userId === userId);
+      return room.playerList.some(player => player.userId === userId);
    }) || null;
    return room;
 }
 
 function findPlayerById(playerId: string, playersList: Player[] | null): Player | undefined {
-   const player = playersList?.find((player) => player.getUserId === playerId);
+   const player = playersList?.find((player) => player.userId === playerId);
    return player;
 }
+
+//TODO :
+// - Read deeply what SOLID is and use it in the project.

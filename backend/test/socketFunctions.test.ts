@@ -37,6 +37,7 @@ describe("Socket.io, creating and joining room", () => {
 
       const onConnect = () => {
          connections += 1;
+         console.log("connections :", connections);
          if (connections === 2) {
             done();
          }
@@ -73,8 +74,10 @@ describe("Socket.io, creating and joining room", () => {
 
          hostSocket.emit("createRoom", hostId, hostName);
 
-         hostSocket.once("refreshPlayers", (room) => {
-            expect(room.playerList).toContainEqual(
+         
+         hostSocket.once("refreshPlayers", (room) => { // stops there, because i deleted it in real code.
+            console.log("Received room : ", room);
+            expect(room.players).toContainEqual(
                {
                   username: hostName,
                   userId: hostId,
@@ -82,16 +85,17 @@ describe("Socket.io, creating and joining room", () => {
                   isHost: true
                }
             );
-            let roomId = room.roomId; // In practice this is code which has to be shared between users.
+            let roomId = room.id; // The code required to join for other player
+            console.log("RoomId:", roomId);
 
-            // Non host player joins the room:
+            // Non host player joins the room using code above:
             const guestId = "guestId";
             const guestName = "guestName";
 
             userSocket.emit("joinRoom", guestId, roomId, guestName);
 
             userSocket.once("refreshPlayers", (room) => {
-               expect(room.playerList).toEqual(
+               expect(room.players).toEqual(
                   [
                      {
                         isHost: true,
@@ -118,4 +122,5 @@ describe("Socket.io, creating and joining room", () => {
 /**
  * IMPORTANT TODO :
  * Add to the test above two another sockets which will create second room and prove that it is not global.
+ * Debug tests
  */

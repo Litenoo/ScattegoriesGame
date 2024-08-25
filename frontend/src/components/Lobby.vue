@@ -25,8 +25,8 @@ const showRoomId = ref(false);
 const { copy } = useClipboard({ roomId });
 
 socket.on("refreshPlayers", (lobbyData) => {
-    console.log("refreshPlayers data received : ", lobbyData.playerList);
-    players.value = lobbyData.playerList;
+    console.log("refreshPlayers data received : ", lobbyData.players);
+    players.value = lobbyData.players;
     roomId.value = lobbyData.roomId;
 });
 

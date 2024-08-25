@@ -11,17 +11,5 @@ class Player {
         this.socketId = socketId;
         this.isHost = isHost;
     }
-    get getUsername() {
-        return this.username;
-    }
-    get getUserId() {
-        return this.userId;
-    }
-    get getSocketId() {
-        return this.socketId;
-    }
-    get getIsHost() {
-        return this.isHost;
-    }
 }
 exports.default = Player;

@@ -7,6 +7,7 @@ import { createServer } from "http";
 
 import logger from "./logger.js";
 import { joinRoom, createLobby, refreshPlayers, startGame } from "./socketFunctions.js";
+import Player from './Classes/Player.js';
 
 const app = express();
 export const server = createServer(app);
@@ -52,10 +53,8 @@ app.get("/userID", (req, res) => {
 io.on('connection', (socket: Socket) => {
    socket.on('createRoom', (userId: string, username: string) => {
       try {
-         const roomId = createLobby();
-         if (roomId) {
-            joinRoom(socket, userId, roomId, username, true);
-         }
+         const host = new Player(username, userId, socket.id, true);
+         const roomId = createLobby(socket, host);
       } catch (err) {
          logger.error(err);
       }
@@ -71,7 +70,7 @@ io.on('connection', (socket: Socket) => {
 
    socket.on('joinRoom', (userId, roomId, username) => {
       console.log("/joinRoom")
-      joinRoom(socket, userId, roomId, username, false);
+      joinRoom(socket, userId, roomId, username);
    })
 
 });
