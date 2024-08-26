@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
     { path: "/", name: "index", component: () => import('./components/Index.vue') },
     { path: "/join", name: "join", component: () => import('./components/JoinGame.vue') },
-    { path: "/lobby", name: "lobby", component: () => import('./components/Lobby.vue') },
+    { path: "/lobby", name: "lobby", component: () => import('./components/lobby/Lobby.vue') },
 ];
 
 const router = createRouter({

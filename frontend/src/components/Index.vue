@@ -1,15 +1,15 @@
 <script setup>
 import router from "../router";
 import Brand from "./Brand.vue";
-import setUserdata from "./functions/setUserData";
+import setUserdata from "./functions/nicknameSetter.js";
 import socket from '../socket';
 import axios from "axios";
 
 const username = defineModel();
 
-getUserIdIfnull() // put it somewhere where it will be called every time
+getUserId() // put it somewhere where it will be called every time
 
-function getUserIdIfnull(){
+function getUserId(){
     const userId = localStorage.getItem("userId");
     console.log("userId equals ", userId)
     if(!userId){
@@ -34,6 +34,7 @@ async function commit(route, newGame){
     setUserdata("username", _username);
     if(newGame){
         createGame();
+        localStorage.setItem("isHost", true); // This is used only for frontend display. Additional authentication is on backend.
     }
 
     router.push(route);

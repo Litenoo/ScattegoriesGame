@@ -26,7 +26,7 @@ export default class Room {
         this._settings = settings;
     }
 
-    public get playerList() : Player[]{
+    public get playerList(): Player[] {
         return this._players;
     }
 }

@@ -1,13 +1,12 @@
 export default class Settings {
-    private playTime: number; // in seconds
-    private maxPlayerCount: number;
 
-    constructor(playTime: number, maxPlayerCount:number){
-        this.playTime = playTime;
-        this.maxPlayerCount = maxPlayerCount;
-    }
+    constructor(
+        private playtimeInSeconds:number,
+        private maxPlayerCount: number,
+        private characters: string[],
+    ) {}
 
-    public get getPlayTime(): number{
-        return this.playTime;
+    public get getPlayTime(): number {
+        return this.playtimeInSeconds;
     }
 }

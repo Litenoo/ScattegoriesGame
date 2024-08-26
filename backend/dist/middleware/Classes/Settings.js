@@ -1,14 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Settings {
-    playTime;
+    playtimeInSeconds;
     maxPlayerCount;
-    constructor(playTime, maxPlayerCount) {
-        this.playTime = playTime;
+    characters;
+    constructor(playtimeInSeconds, maxPlayerCount, characters) {
+        this.playtimeInSeconds = playtimeInSeconds;
         this.maxPlayerCount = maxPlayerCount;
+        this.characters = characters;
     }
     get getPlayTime() {
-        return this.playTime;
+        return this.playtimeInSeconds;
     }
 }
 exports.default = Settings;
