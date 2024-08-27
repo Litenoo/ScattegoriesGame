@@ -15,7 +15,7 @@ function startGame() {
 function switchIdVisible() { showRoomId.value = !showRoomId.value }
 
 function refreshPlayers() {
-   console.log("refresh playersList request sent with userId = ", localStorage.getItem("userId"));
+   console.log("refresh playersList request sent with userId = ", localStorage.getItem("userId")); // dev
    socket.emit("refreshPlayers", localStorage.getItem("userId"));
 }
 
@@ -28,7 +28,7 @@ const { copy } = useClipboard({ roomId });
 socket.on("refreshPlayers", (lobbyData) => {
    console.log("refreshPlayers data received : ", lobbyData.players);
    players.value = lobbyData.players;
-   roomId.value = lobbyData.roomId;
+   roomId.value = lobbyData.id;
 });
 
 refreshPlayers();
@@ -39,7 +39,8 @@ const nonHosts = computed(() => players.value.filter(player => player.isHost ===
 </script>
 
 <template>
-   <div class="flex items-center flex-row bg-zinc-800 shadow-xl rounded-lg p-2 min-w-12">
+   <div class="flex items-center flex-row bg-zinc-800 shadow-xl rounded-lg p-2 min-w-12"> 
+      <!-- make entire component for players display same as for Settings below -->
       <div>
          <span class="pb-2">Lobby</span>
          <div class="flex flex-col">

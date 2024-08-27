@@ -15,12 +15,20 @@ const playTime = defineModel("playTime", 90);
         <form action="" @submit.prevent="commitForm" class="flex flex-col">
 
             Settings :
-            <input type="number" required value="10" placeholder="Max Player Quantity" class="m-1 p-0.5 rounded-md" v-model="playersQuantity">
-            <input type="number" required value="90" placeholder="PlayTime (in seconds)" max="600" class="m-1 p-0.5 rounded-md" v-model="playTime">
+            <div class="flex justify-end items-center">
+                Players Quantity
+                <input type="number" required value="10" placeholder="Max Player Quantity" class="m-1 p-0.5 rounded-md" v-model="playersQuantity">
+            </div>
+            <div class="flex justify-end items-center">
+                Play time
+                <input type="number" required value="90" placeholder="PlayTime (in seconds)" max="600" class="m-1 p-0.5 rounded-md" v-model="playTime">
+            </div>
             Characters : 
             <CharacterSelect/>
-            Categories :
+            Sugested Categories :
             <CategoriesSelect/>
+            Active Categories :
+            
         </form>
     </div>
 </template>

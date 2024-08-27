@@ -39,9 +39,17 @@ export const gameConfig = defineStore("gameConfig", {
         startGame() {
             socket.emit("startGame", localStorage.getItem("userId"), categories, settings);
         },
-        modifyCharacter(char, boolean){
+        modifyCharacter(char, boolean) {
             const character = this.settings.characters.find(record => record.character === char);
             character.state = boolean;
+        },
+        removeCategory(categoryName) {
+            const targetIndex = this.categories.forEach((element, index) => {
+                if(element === categoryName){
+                    return targetIndex;
+                }
+            });
+            console.log("Removing category with index : ", index);
         }
     }
 });
