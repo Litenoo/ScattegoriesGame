@@ -1,12 +1,14 @@
-<script setup>
-import socket from '../../socket'
+<script setup lang="ts">
+import socket from '../../socket.js';
 import { ref, computed } from "vue";
 import { useClipboard } from "@vueuse/core";
+
+import Player from "../classes/Player";
 
 import Settings from "./Settings.vue";
 import StartButton from './StartButton.vue';
 
-function startGame() {
+function startGame(settings) {
    const userId = localStorage.getItem("userId");
    console.log("StartGame with id : ", userId);
    socket.emit("startGame", userId, settings);
@@ -19,11 +21,11 @@ function refreshPlayers() {
    socket.emit("refreshPlayers", localStorage.getItem("userId"));
 }
 
-const players = ref([]);
-const roomId = ref(String);
+const players = ref<Player[]>([]);
+const roomId = ref<string>("");
 const showRoomId = ref(false);
 
-const { copy } = useClipboard({ roomId });
+const { copy } = useClipboard({ source: roomId.value });
 
 socket.on("refreshPlayers", (lobbyData) => {
    console.log("refreshPlayers data received : ", lobbyData.players);
@@ -39,7 +41,7 @@ const nonHosts = computed(() => players.value.filter(player => player.isHost ===
 </script>
 
 <template>
-   <div class="flex items-center flex-row bg-zinc-800 shadow-xl rounded-lg p-2 min-w-12"> 
+   <div class="flex items-center flex-row bg-zinc-800 shadow-xl rounded-lg p-2 min-w-12">
       <!-- make entire component for players display same as for Settings below -->
       <div>
          <span class="pb-2">Lobby</span>
@@ -70,7 +72,7 @@ const nonHosts = computed(() => players.value.filter(player => player.isHost ===
                </div>
 
             </div>
-            <StartButton/>
+            <StartButton />
          </div>
       </div>
       <Settings />

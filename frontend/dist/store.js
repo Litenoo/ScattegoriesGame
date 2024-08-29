@@ -1,28 +1,27 @@
-import { defineStore } from "pinia";
-import socket from "./socket.js";
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.gameConfig = exports.userData = void 0;
+const pinia_1 = require("pinia");
+const socket_js_1 = __importDefault(require("./socket.js"));
 const charactersTemplate = [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
     'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
     'U', 'V', 'W', 'X', 'Y', 'Z', 'Ć', 'Ł', 'Ś', 'Ź', 'Ż',
 ];
-
 const characters = [];
-
 charactersTemplate.forEach((char) => {
     characters.push({ character: char, state: true });
 });
-
-export const userData = defineStore('userData', {
+exports.userData = (0, pinia_1.defineStore)('userData', {
     state: () => {
         return { userId: "", roomId: "" };
     },
-    actions: {
-
-    }
+    actions: {}
 });
-
-export const gameConfig = defineStore("gameConfig", {
+exports.gameConfig = (0, pinia_1.defineStore)("gameConfig", {
     state: () => {
         return {
             settings: {
@@ -33,11 +32,11 @@ export const gameConfig = defineStore("gameConfig", {
             categories: [
                 "Country", "Capital City", "River"
             ]
-        }
+        };
     },
     actions: {
         startGame() {
-            socket.emit("startGame", localStorage.getItem("userId"), categories, settings);
+            socket_js_1.default.emit("startGame", localStorage.getItem("userId"), categories, settings);
         },
         modifyCharacter(char, boolean) {
             const character = this.settings.characters.find(record => record.character === char);
@@ -45,7 +44,7 @@ export const gameConfig = defineStore("gameConfig", {
         },
         removeCategory(categoryName) {
             const targetIndex = this.categories.forEach((element, index) => {
-                if(element === categoryName){
+                if (element === categoryName) {
                     return targetIndex;
                 }
             });

@@ -1,8 +1,8 @@
-<script setup>
-import router from "../router";
+<script setup lang="ts">
+import router from "../router.js";
 import Brand from "./Brand.vue";
-import setUserdata from "./functions/nicknameSetter.js";
-import socket from '../socket';
+import setUserdata from "./functions/nicknameSetter";
+import socket from '../socket.js';
 import axios from "axios";
 
 const username = defineModel();
@@ -22,7 +22,7 @@ function getUserId(){
     }
 }
 
-async function commit(route, newGame){
+async function commit(route: string, newGame: boolean){ //dev check if it is the best way
     let _username;
     const localStUsrname = localStorage.getItem("username");
 
@@ -34,6 +34,7 @@ async function commit(route, newGame){
     setUserdata("username", _username);
     if(newGame){
         createGame();
+        //@ts-ignore
         localStorage.setItem("isHost", true); // This is used only for frontend display. Additional authentication is on backend.
     }
 

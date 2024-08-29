@@ -1,1 +1,0 @@
-import{_ as s,o as t,c}from"./index-CHIlKXXt.js";const e="/assets/scattegories-Bg1rMGyD.png",r={},o={src:e,alt:"",class:"w-brand pb-6 pt-1"};function n(a,_){return t(),c("img",o)}const i=s(r,[["render",n]]);export{i as B};

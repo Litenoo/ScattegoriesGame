@@ -1,4 +1,4 @@
-export default (variable, value) => {
+export default (variable: string, value: string) => {
     console.log("Trying to set username : ", value)
     try {
         if (!value && variable === "username") {
