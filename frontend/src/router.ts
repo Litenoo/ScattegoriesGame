@@ -12,17 +12,18 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.path !== "/") {
-        if (localStorage.getItem("userId")) {
-            console.log("has userId");
-            next();
-        } else {
-            console.log("not userId");
-            next({ name: "index" });
-        }
-    }else{
-        next();
-    }
+    // if (to.path !== "/") {
+    //     if (localStorage.getItem("userId")) {
+    //         console.log("has userId");
+    //         next();
+    //     } else {
+    //         console.log("not userId");
+    //         next({ name: "index" });
+    //     }
+    // }else{
+    //     next();
+    // }
+    next();
 });
 
 export default router;

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Brand from "./Brand.vue";
 import socket from "../socket";
 import router from "../router";
@@ -6,9 +6,14 @@ import { ref } from "vue";
 
 const roomId = ref();
 
-function joinRoom() {
-    socket.emit("joinRoom", localStorage.getItem("userId"), roomId.value, localStorage.getItem("username"), localStorage.getItem("userId"));
-    router.push({ path: "lobby" });
+function joinRoom() { //move to store
+    const userId = localStorage.getItem("userId");
+    if(userId){
+        socket.emit("joinRoom", userId, roomId.value, localStorage.getItem("username"), localStorage.getItem("userId"));
+        router.push({ path: "lobby" });
+    }else{
+        console.log("Failed to read userId");
+    }
 }
 </script>
 
@@ -16,11 +21,8 @@ function joinRoom() {
     <div class="flex justify-center flex-col items-center 
     bg-zinc-800 shadow-xl rounded-lg 
     pt-2 pb-2 pl-1 pr-1">
-
         <Brand />
-
         <span class="pb-2">Join By Id</span>
-
         <div class="flex flex-col">
             <input type="text" name="roomId" placeholder="room ID"  v-model="roomId">
             <button @click="joinRoom()">Join</button>

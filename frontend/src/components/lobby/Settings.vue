@@ -1,6 +1,8 @@
 <script setup>
-import CharacterSelect from './letterSelect/CharacterSelect.vue';
-import CategoriesSelect from './categoriesSelect/CategoriesSelect.vue';
+import CharacterSelect from './characterSelect/CharacterSelect.vue';
+import CategoriesSelect from './categoryManagement/CategoriesSelect.vue';
+import ActiveCategories from "./activeCategories/ActiveCategories.vue";
+
 
 function commitForm(){
     console.log(playersQuantity.value, playTime.value);
@@ -28,6 +30,7 @@ const playTime = defineModel("playTime", 90);
             Sugested Categories :
             <CategoriesSelect/>
             Active Categories :
+            <ActiveCategories/>
             
         </form>
     </div>

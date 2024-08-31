@@ -58,6 +58,7 @@ function refreshPlayers(userId, socketId) {
                 player = findPlayerById(userId, room.playerList);
             }
             if (room) {
+                console.log("roomId : ", room.id);
                 room.playerList.forEach((player) => {
                     if (player.socketId !== socketId) {
                         app_1.io.to(player.socketId).emit("refreshPlayers", { id: room.id, players: room.playerList });

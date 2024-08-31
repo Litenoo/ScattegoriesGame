@@ -1,26 +1,10 @@
 <script setup lang="ts">
 import router from "../router.js";
 import Brand from "./Brand.vue";
-import setUserdata from "./functions/nicknameSetter";
+import setUserdata from "../functions/nicknameSetter.js";
 import socket from '../socket.js';
-import axios from "axios";
 
 const username = defineModel();
-
-getUserId() // put it somewhere where it will be called every time
-
-function getUserId(){
-    const userId = localStorage.getItem("userId");
-    console.log("userId equals ", userId)
-    if(!userId){
-        console.log("fetching new userId");
-        axios.get("http://localhost:3000/userId")
-        .then(response =>{
-            console.log("setting userId to : ", response.data);
-            localStorage.setItem("userId", response.data);
-        })
-    }
-}
 
 async function commit(route: string, newGame: boolean){ //dev check if it is the best way
     let _username;

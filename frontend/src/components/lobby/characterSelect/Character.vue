@@ -1,15 +1,15 @@
 <script setup>
 import { ref } from "vue";
-import { gameConfig } from "../../../store";
+import { useGameConfigStore } from "../../../store/gameConfigStore";
 const props = defineProps({ char: String });
 
-const settings = gameConfig();
+const gameConfig = useGameConfigStore();
 
 let checkboxStatus = ref(true);
 
 function switchStatus() {
     checkboxStatus.value = !checkboxStatus.value;
-    settings.modifyCharacter(props.char, checkboxStatus.value);
+    gameConfig.modifyCharacter(props.char, checkboxStatus.value);
 }
 </script>
 

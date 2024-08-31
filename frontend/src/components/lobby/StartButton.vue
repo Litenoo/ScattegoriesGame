@@ -1,5 +1,8 @@
 <script setup>
-import { gameConfig } from "../../store";
+import { useGameConfigStore } from "../../store/gameConfigStore";
+
+const gameConfig = useGameConfigStore();
+
 function startGame() {
     gameConfig.startGame();
 }
@@ -9,4 +12,5 @@ function startGame() {
     <button @click="startGame()" class="bg-green-600 rounded-md min-w-24 p-3">
         Start
     </button>
+    <!-- Move this component to another folder. -->
 </template>

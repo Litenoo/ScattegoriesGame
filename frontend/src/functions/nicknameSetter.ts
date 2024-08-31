@@ -1,9 +1,5 @@
-export default (variable: string, value: string) => {
-    console.log("Trying to set username : ", value)
+export default (variable: string, value = randomName()) => {
     try {
-        if (!value && variable === "username") {
-            value = randomName();
-        }
         localStorage.setItem(variable, value);
     } catch (err) {
         console.log(err);
@@ -17,6 +13,5 @@ const animals = ["Snake", "Hamster", "Racoon", "Owl", "Tiger", "Lion", "Bear", "
 function randomName() {
     const name = adjectives[Math.floor(Math.random() * adjectives.length)] +
         animals[Math.floor(Math.random() * animals.length)];
-
     return name;
 }
