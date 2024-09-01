@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import Brand from "./Brand.vue";
-import socket from "../socket";
-import router from "../router";
 import { ref } from "vue";
+import Brand from "./Brand.vue";
+import { useGameConfigStore } from "@/store/gameConfigStore";
+
+const gameConfigStore = useGameConfigStore();
 
 const roomId = ref();
 
-function joinRoom() { //move to store
-    const userId = localStorage.getItem("userId");
-    if(userId){
-        socket.emit("joinRoom", userId, roomId.value, localStorage.getItem("username"), localStorage.getItem("userId"));
-        router.push({ path: "lobby" });
-    }else{
-        console.log("Failed to read userId");
-    }
+function joinRoom() {
+    gameConfigStore.joinRoom(roomId.value);
 }
 </script>
 
@@ -25,7 +20,7 @@ function joinRoom() { //move to store
         <span class="pb-2">Join By Id</span>
         <div class="flex flex-col">
             <input type="text" name="roomId" placeholder="room ID"  v-model="roomId">
-            <button @click="joinRoom()">Join</button>
+            <button @click="joinRoom">Join</button>
         </div>
     </div>
 </template>

@@ -3,30 +3,20 @@ import socket from '../../socket.js';
 import { ref, computed } from "vue";
 import { useClipboard } from "@vueuse/core";
 import StartButton from './StartButton.vue';
-import Player from "../../classes/Player.js";
-import useUserDataStore from '../../store/userDataStore.js';
+import { useGameConfigStore } from '@/store/gameConfigStore.js';
 
-const userStore = useUserDataStore(); // neessary to make store work correctly.
+const store = useGameConfigStore(); // neessary to make store work correctly.
+
+const roomId = computed(() => store.currentRoom.id || "null");
+
+const { copy } = useClipboard({ source: roomId });
 
 function switchIdVisible() { showRoomId.value = !showRoomId.value }
 
-function refreshPlayers() { socket.emit("refreshPlayers", localStorage.getItem("userId")); }
-
-const players = ref<Player[]>([]); //move to store
-const roomId = ref<string>(""); // move to store
 const showRoomId = ref(false);
 
-const { copy } = useClipboard({ source: roomId.value });
-
-socket.on("refreshPlayers", (lobbyData) => {
-    players.value = lobbyData.players;
-    roomId.value = lobbyData.id;
-});
-
-refreshPlayers();
-
-const hosts = computed(() => players.value.filter(player => player.isHost === true));
-const nonHosts = computed(() => players.value.filter(player => player.isHost === false));
+const hosts = computed(() => store.currentRoom?.roomMates.filter(player => player.isHost === true));
+const nonHosts = computed(() => store.currentRoom?.roomMates.filter(player => player.isHost === false));
 
 </script>
 

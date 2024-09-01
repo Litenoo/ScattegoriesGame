@@ -1,7 +1,7 @@
 <script setup>
 import CharacterSelect from './characterSelect/CharacterSelect.vue';
-import CategoriesSelect from './categoryManagement/CategoriesSelect.vue';
-import ActiveCategories from "./activeCategories/ActiveCategories.vue";
+import CategoriesSelect from './categoriesManagement/CategoriesSelect.vue';
+import ActiveCategories from "./categoriesManagement/ActiveCategories.vue";
 
 
 function commitForm(){

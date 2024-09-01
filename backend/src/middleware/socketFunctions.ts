@@ -59,13 +59,9 @@ export function refreshPlayers(userId: string, socketId: string) {
          }
 
          if (room) {
-            console.log("roomId : ", room.id);
             room.playerList.forEach((player) => {
-               if (player.socketId !== socketId) { //filters to avoid sending response more than once
-                  io.to(player.socketId).emit("refreshPlayers", { id: room.id, players: room.playerList });
-               }
+                  io.to(player.socketId).emit("refreshPlayers", {id: room.id, players : room.roomMates});
             });
-            io.to(socketId).emit("refreshPlayers", { id: room.id, players: room.playerList });
          }
       }
    } catch (err) {

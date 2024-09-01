@@ -79,10 +79,8 @@ describe("Socket.io, creating and joining room", () => {
             console.log("Received room : ", room);
             expect(room.players).toContainEqual(
                {
+                  isHost: true,
                   username: hostName,
-                  userId: hostId,
-                  socketId: hostSocket.id,
-                  isHost: true
                }
             );
             let roomId = room.id; // The code required to join for other player
@@ -95,18 +93,15 @@ describe("Socket.io, creating and joining room", () => {
             userSocket.emit("joinRoom", guestId, roomId, guestName);
 
             userSocket.once("refreshPlayers", (room) => {
+               console.log("Received room 2 : ", room);
                expect(room.players).toEqual(
                   [
                      {
                         isHost: true,
-                        socketId: hostSocket.id,
-                        userId: hostId,
                         username: hostName,
                      },
                      {
                         isHost: false,
-                        socketId: userSocket.id,
-                        userId: guestId,
                         username: guestName,
                      }],
                );

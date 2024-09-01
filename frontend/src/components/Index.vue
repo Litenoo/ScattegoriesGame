@@ -1,49 +1,42 @@
 <script setup lang="ts">
 import router from "../router.js";
 import Brand from "./Brand.vue";
-import setUserdata from "../functions/nicknameSetter.js";
-import socket from '../socket.js';
+import { ref } from "vue";
+import { useGameConfigStore } from "../store/gameConfigStore.js";
 
-const username = defineModel();
+const gameConfig = useGameConfigStore();
 
-async function commit(route: string, newGame: boolean){ //dev check if it is the best way
-    let _username;
-    const localStUsrname = localStorage.getItem("username");
+const username = ref();
 
-    if(username.value){
-        _username = username.value;
-    }else if (localStUsrname){
-        _username = localStUsrname;
-    }
-    setUserdata("username", _username);
-    if(newGame){
-        createGame();
-        //@ts-ignore
-        localStorage.setItem("isHost", true); // This is used only for frontend display. Additional authentication is on backend.
-    }
-
-    router.push(route);
+function joinByCodeRedirect(){
+    gameConfig.initUserData(username.value);
+    router.push("/join");
 }
 
-function createGame() {
-    const username = localStorage.getItem("username");
-    socket.emit("createRoom", localStorage.getItem("userId"), username);
+async function createGame(){
+    await gameConfig.initUserData(username.value);
+    gameConfig.createRoom();
+    router.push("/lobby");
 }
 </script>
 
 <template>
-        <div class="flex justify-center flex-col items-center
+    <div class="flex justify-center flex-col items-center
         bg-zinc-800 shadow-xl rounded-lg
         pt-2 pb-2 pl-1 pr-1">
-            <Brand />
-            <input type="text" name="username" placeholder="Username" class="mb-5 w-2/3 bg-neutral-900 border border-1 border-zinc-400 rounded-md p-2 outline-none" v-model="username">
-            <div class="flex flex-row">
-                <div class="flex items-center align-middle justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1 cursor-pointer" @click="commit('/lobby', true)">
-                    Create New Room
-                </div>
-                <div class="flex items-center justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1 cursor-pointer" @click="commit('/join', false)">
-                    Join Room
-                </div>
+        <Brand />
+        <input type="text" name="username" placeholder="Username"
+            class="mb-5 w-2/3 bg-neutral-900 border border-1 border-zinc-400 rounded-md p-2 outline-none"
+            v-model="username">
+        <div class="flex flex-row">
+            <div class="flex items-center align-middle justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1 cursor-pointer"
+                @click="createGame">
+                Create New Room
+            </div>
+            <div class="flex items-center justify-center w-button rounded-md bg-neutral-900 h-12 m-1 pb-1 cursor-pointer"
+                @click="joinByCodeRedirect">
+                Join Room
             </div>
         </div>
-</template>
+    </div>
+  </template>

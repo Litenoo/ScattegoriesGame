@@ -64,7 +64,7 @@ io.on('connection', (socket: Socket) => {
       refreshPlayers(userId, socket.id);
    });
 
-   socket.on("startGame", (userId) => { // validate if user is host
+   socket.on("startGame", (userId) => { // validate if user is host // Btw here will be gameConfig config sent as prop
       // startGame(userId);
    })
 
