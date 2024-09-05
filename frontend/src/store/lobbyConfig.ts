@@ -1,27 +1,21 @@
 import { defineStore } from "pinia";
+
+import router from "../router.js";
 import socket from "../socket.js";
 
-import Character from "../classes/Character.js";
-import charactersJson from "./alphabet.json";
-import router from "../router.js";
-
+import { RefreshPlayersResponse } from "@/classes/serverResponses.js";
 import GameConfig from "@/classes/GameConfig.js";
 import UserConfig from "@/classes/UserConfig.js";
 import Room from "@/classes/Room.js";
-import { RefreshPlayersResponse } from "@/classes/serverResponses.js";
 
-const charactersTemplate: string[] = charactersJson.alphabet;
-
-function createDefultCharacters(): Character[] {
-    return charactersTemplate.map(char => ({ character: char, state: true }));
-}
 
 export const useGameConfigStore = defineStore("gameConfig", {
-    state: (): { userData: UserConfig | null, currentRoom: Room, gameConfig: GameConfig | null } => ({
+    state: (): { userData: UserConfig | null, currentRoom: Room, gameConfig: GameConfig } => ({
         userData: null, // users data such as nickname, userID, isHost, socketId;
         currentRoom: new Room(), // room which user is currently in;
-        gameConfig: null, // room settings & categories;
+        gameConfig: new GameConfig(), // room settings & categories;
     }),
+    persist: true,
     actions: {
         async initUserData(username: string|undefined) { // Check if it may be done more efficient DEV
             const userConfig = new UserConfig();
@@ -57,7 +51,6 @@ export const useGameConfigStore = defineStore("gameConfig", {
                 const username = this.userData?.getUsername;
                 socket.emit("createRoom", userId, username);
                 socket.on("refreshPlayers", (roomData: RefreshPlayersResponse) => {
-                    console.log("RoomData :", roomData);
                     this.currentRoom.updateRoom(roomData);
                     router.push("/lobby");
                 });
@@ -66,6 +59,9 @@ export const useGameConfigStore = defineStore("gameConfig", {
         async refreshPlayerList() {
             await this.validateUserInit(() => {
                 socket.emit("refreshPlayers", this.userData?.getUserId);
+                socket.on("refreshPlayers", (roomData: RefreshPlayersResponse) => {
+                    this.currentRoom.updateRoom(roomData);
+                });
             });
         },
         startGame() {
@@ -76,5 +72,5 @@ export const useGameConfigStore = defineStore("gameConfig", {
                 console.log("Failed to read userId");
             }
         }
-    }
+    },
 });

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import socket from '../../socket.js';
 import { ref, computed } from "vue";
 import { useClipboard } from "@vueuse/core";
 import StartButton from './StartButton.vue';
-import { useGameConfigStore } from '@/store/gameConfigStore.js';
+import { useGameConfigStore } from '@/store/lobbyConfig.js';
 
 const store = useGameConfigStore(); // neessary to make store work correctly.
+
+store.refreshPlayerList();
 
 const roomId = computed(() => store.currentRoom.id || "null");
 
@@ -17,6 +18,8 @@ const showRoomId = ref(false);
 
 const hosts = computed(() => store.currentRoom?.roomMates.filter(player => player.isHost === true));
 const nonHosts = computed(() => store.currentRoom?.roomMates.filter(player => player.isHost === false));
+
+console.log("Hosts:", hosts.value, "NonHosts:", nonHosts.value)
 
 </script>
 

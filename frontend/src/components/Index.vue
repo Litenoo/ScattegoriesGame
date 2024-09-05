@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import router from "../router.js";
-import Brand from "./Brand.vue";
 import { ref } from "vue";
-import { useGameConfigStore } from "../store/gameConfigStore.js";
+import router from "../router.js";
+
+import { useGameConfigStore } from "../store/lobbyConfig.js";
+import Brand from "./Brand.vue";
 
 const gameConfig = useGameConfigStore();
 

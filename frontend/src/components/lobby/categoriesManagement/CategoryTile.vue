@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useGameConfigStore } from '../../../store/gameConfigStore';
+import { useGameConfigStore } from '../../../store/lobbyConfig';
 
 const props = defineProps({ category: String });
-const gameConfig = useGameConfigStore();
+const store = useGameConfigStore();
 
-function selfDelete() { if (props.category) gameConfig.removeCategory(props.category); }
+function selfDelete() { if (props.category) store.gameConfig.removeCategory(props.category); }
 </script>
 
 <template>

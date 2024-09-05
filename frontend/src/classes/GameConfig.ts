@@ -1,24 +1,47 @@
+import { ref } from "vue";
 import characterSet from "../store/alphabet.json";
-import socket from "@/socket";
-import { useGameConfigStore } from "@/store/gameConfigStore";
-
-const store = useGameConfigStore();
 
 class Settings {
     constructor(
-        public maxPlayersQuantity: number,
-        public playTimeInSeconds: number,
-        public characters: string[],
+        public maxPlayersQuantity = ref(10),
+        public playTimeInSeconds = ref(90),
+        public roundsQuantity = ref(10),
     ) { }
 }
 
 export default class defaultConfig {
-    readonly settings = new Settings(10, 90, characterSet.alphabet);
-    public categories: string[] = ["City", "Country", "River"];
+    private settings = new Settings();
+    readonly characters: string[] = characterSet.alphabet;
+    readonly categories: string[] = ["City", "Country", "River"];
 
-    createGame() {
-        const username = localStorage.getItem("username");
-        const userId = store.userData?.getUserId;
-        socket.emit("createRoom", userId, username);
+    public get getSettings(): Settings {
+        return this.settings;
+    }
+
+    public pushCategory(category: string): void {
+        this.categories.push(category);
+    }
+
+    public removeCategory(category: string): void {
+        const index = this.categories.findIndex(current => current === category);
+        if (index !== -1) {
+            this.categories.splice(index, 1);
+        }
+    }
+
+    public switchCharacter(character: string): void {
+        const index = this.characters.findIndex(current => current === character);
+        if (character.length === 1) {
+            if (index !== -1) {
+                this.characters.splice(index, 1)
+            } else {
+                this.characters.push(character);
+            }
+        }
+        console.log(this.characters)
+    }
+
+    public get settingsRefs(){
+        return this.settings;
     }
 }
