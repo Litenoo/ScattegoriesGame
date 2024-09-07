@@ -1,10 +1,10 @@
 <script setup>
 import { useGameConfigStore } from "../../store/lobbyConfig";
 
-const gameConfig = useGameConfigStore();
+const store = useGameConfigStore();
 
 function startGame() {
-    gameConfig.startGame();
+    store.startGame();
 }
 </script>
 
@@ -12,5 +12,4 @@ function startGame() {
     <button @click="startGame()" class="bg-green-600 rounded-md min-w-24 p-3">
         Start
     </button>
-    <!-- Move this component to another folder. -->
 </template>

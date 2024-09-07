@@ -1,10 +1,11 @@
 import Player from "./Player";
-import Settings from "./Settings";
+import { GameConfig, GameConfigStructure } from "./GameConfig";
+import { io } from "../app";
 
 export default class Room {
     private players: Player[] = [];
-    private categories: string[] = [];
-    private settings: Settings | undefined;
+    readonly gameConfig: GameConfig | undefined;
+    private currentRound: number = 0;
 
     constructor(
         public readonly id: string,
@@ -18,20 +19,26 @@ export default class Room {
         this.players.push(player);
     }
 
-    public set setCategories(categories: string[]) {
-        this.categories = categories;
-    }
-
-    public set applySettings(settings: Settings) {
-        this.settings = settings;
-    }
-
     public get playerList(): Player[] {
         return this.players;
     }
 
-    public get roomMates(){
-        const mates = this.players.map(player => ({username: player.username, isHost: player.isHost}));
+    public get roomMates() { // returns list of player without their socket id's and user id's.
+        const mates = this.players.map(player => ({ username: player.username, isHost: player.isHost }));
         return mates;
+    }
+
+
+    beginGame(gameConfig: GameConfigStructure) {
+        console.log("Updating gameConfi : ", gameConfig); // k
+        this.gameConfig?.setGameConfig(gameConfig); // error here
+        this.playerList.forEach(player => {
+            io.to(player.socketId).emit("gameBegins", this.roomMates);
+        });
+    }
+
+    //methods used during the game
+    roundIncrement() {
+        this.currentRound++;
     }
 }

@@ -6,9 +6,9 @@ import { io } from "./app";
 
 import Room from "./Classes/Room";
 import Player from "./Classes/Player";
-import Settings from "./Classes/Settings";
+import { GameConfigStructure } from "./Classes/GameConfig";
 
-const lobbies: Room[] = []; //think about using class instead of just array.
+const lobbies: Room[] = [];
 
 export function joinRoom(socket: Socket, userId: string, roomId: string, name: string) {
    try {
@@ -20,7 +20,7 @@ export function joinRoom(socket: Socket, userId: string, roomId: string, name: s
       } else {
          socket.emit("Error", { errorMsg: "There is no room with id you search for" });
       }
-      refreshPlayers(userId, socket.id);
+      refreshPlayers(userId);
    } catch (err) {
       logger.error("Unexpected Error : " + err);
    }
@@ -33,22 +33,31 @@ export function createLobby(socket: Socket, host: Player): string | undefined {
 
       const room: Room = new Room(lobbyId, date.getTime(), host);
       lobbies.push(room);
-      refreshPlayers(host.userId, socket.id);
+      refreshPlayers(host.userId);
       return room.id;
    } catch (err) {
       logger.error("Unexpected Error : " + err);
    }
 }
 
-export function startGame(userId: string, categories: string[], settings: Settings) {
+export function startGame(userId: string, gameConfig: GameConfigStructure) {
    const room = findRoomByPlayerId(userId);
 
    if (room?.playerList.some(player => player.userId === userId && player.isHost === true)) {
-      console.log("Accepted, starting game !");
+      room.beginGame(gameConfig);
+      console.log("RECEIVED GAME CONF : ", gameConfig);
+
+      const categories = room.gameConfig?.getCategories;
+      console.log("sending game starting with categories : ", categories);
+      room.playerList.forEach(player => {
+         io.to(player.socketId).emit("gameStarted", { categories: categories });
+      });
+   } else {
+      console.log("Denied, player who started the game is non host."); //dev
    }
 }
 
-export function refreshPlayers(userId: string, socketId: string) {
+export function refreshPlayers(userId: string) {
    try {
       console.log("Refreshing players list for userId : ", userId);
       if (userId) {
@@ -60,7 +69,7 @@ export function refreshPlayers(userId: string, socketId: string) {
 
          if (room) {
             room.playerList.forEach((player) => {
-                  io.to(player.socketId).emit("refreshPlayers", {id: room.id, players : room.roomMates});
+               io.to(player.socketId).emit("refreshPlayers", { id: room.id, players: room.roomMates });
             });
          }
       }

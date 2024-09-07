@@ -57,12 +57,12 @@ exports.io.on('connection', (socket) => {
         }
     });
     socket.on("refreshPlayers", (userId) => {
-        (0, socketFunctions_js_1.refreshPlayers)(userId, socket.id);
-    });
-    socket.on("startGame", (userId) => {
+        (0, socketFunctions_js_1.refreshPlayers)(userId);
     });
     socket.on('joinRoom', (userId, roomId, username) => {
-        console.log("/joinRoom");
         (0, socketFunctions_js_1.joinRoom)(socket, userId, roomId, username);
+    });
+    socket.on("startGame", (userId, gameConfig) => {
+        (0, socketFunctions_js_1.startGame)(userId, gameConfig);
     });
 });

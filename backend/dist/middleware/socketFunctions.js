@@ -23,7 +23,7 @@ function joinRoom(socket, userId, roomId, name) {
         else {
             socket.emit("Error", { errorMsg: "There is no room with id you search for" });
         }
-        refreshPlayers(userId, socket.id);
+        refreshPlayers(userId);
     }
     catch (err) {
         logger_1.default.error("Unexpected Error : " + err);
@@ -35,20 +35,29 @@ function createLobby(socket, host) {
         const lobbyId = randomstring_1.default.generate(12);
         const room = new Room_1.default(lobbyId, date.getTime(), host);
         lobbies.push(room);
-        refreshPlayers(host.userId, socket.id);
+        refreshPlayers(host.userId);
         return room.id;
     }
     catch (err) {
         logger_1.default.error("Unexpected Error : " + err);
     }
 }
-function startGame(userId, categories, settings) {
+function startGame(userId, gameConfig) {
     const room = findRoomByPlayerId(userId);
     if (room?.playerList.some(player => player.userId === userId && player.isHost === true)) {
-        console.log("Accepted, starting game !");
+        room.beginGame(gameConfig);
+        console.log("RECEIVED GAME CONF : ", gameConfig);
+        const categories = room.gameConfig?.getCategories;
+        console.log("sending game starting with categories : ", categories);
+        room.playerList.forEach(player => {
+            app_1.io.to(player.socketId).emit("gameStarted", { categories: categories });
+        });
+    }
+    else {
+        console.log("Denied, player who started the game is non host.");
     }
 }
-function refreshPlayers(userId, socketId) {
+function refreshPlayers(userId) {
     try {
         console.log("Refreshing players list for userId : ", userId);
         if (userId) {

@@ -4,6 +4,7 @@ import randomstring from "randomstring";
 import cors from 'cors';
 import { Server, Socket } from "socket.io";
 import { createServer } from "http";
+import { GameConfigStructure } from './Classes/GameConfig.js';
 
 import logger from "./logger.js";
 import { joinRoom, createLobby, refreshPlayers, startGame } from "./socketFunctions.js";
@@ -60,17 +61,15 @@ io.on('connection', (socket: Socket) => {
       }
    });
 
-   socket.on("refreshPlayers", (userId) => {
-      refreshPlayers(userId, socket.id);
+   socket.on("refreshPlayers", (userId: string) => {
+      refreshPlayers(userId);
    });
 
-   socket.on("startGame", (userId) => { // validate if user is host // Btw here will be gameConfig config sent as prop
-      // startGame(userId);
-   })
-
-   socket.on('joinRoom', (userId, roomId, username) => {
-      console.log("/joinRoom")
+   socket.on('joinRoom', (userId: string, roomId: string, username: string) => {
       joinRoom(socket, userId, roomId, username);
-   })
+   });
 
+   socket.on("startGame", (userId: string, gameConfig: GameConfigStructure) => { // validate if user is host // Btw here will be gameConfig config sent as prop
+      startGame(userId, gameConfig);
+   });
 });

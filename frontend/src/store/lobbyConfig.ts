@@ -64,13 +64,17 @@ export const useGameConfigStore = defineStore("gameConfig", {
                 });
             });
         },
-        startGame() {
-            const userId = localStorage.getItem("userId");
-            if (userId) {
-                socket.emit("startGame", userId, this.gameConfig);
-            } else {
-                console.log("Failed to read userId");
-            }
+        async startGame() {
+            await this.validateUserInit(()=>{
+                socket.emit("startGame", this.userData?.getUserId, this.gameConfig);
+            });
         }
     },
+});
+
+const store = useGameConfigStore();
+
+socket.on("gameStarted", (categories: string[]) => {
+    store.gameConfig.setCategories = categories;
+    console.log("Game starting with categories: ", categories);
 });
