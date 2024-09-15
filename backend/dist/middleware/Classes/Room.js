@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const GameConfig_1 = require("./GameConfig");
 const app_1 = require("../app");
 class Room {
     id;
     created;
     host;
     players = [];
-    gameConfig;
+    gameConfig = new GameConfig_1.GameConfig({ maxPlayersQuantity: 10, playTimeInSeconds: 10, roundsQuantity: 10 }, [], []);
     currentRound = 0;
     constructor(id, created, host) {
         this.id = id;
@@ -25,7 +26,7 @@ class Room {
         return mates;
     }
     beginGame(gameConfig) {
-        console.log("Updating gameConfi : ", gameConfig);
+        console.log("Updating gameConfig : ", gameConfig);
         this.gameConfig?.setGameConfig(gameConfig);
         this.playerList.forEach(player => {
             app_1.io.to(player.socketId).emit("gameBegins", this.roomMates);

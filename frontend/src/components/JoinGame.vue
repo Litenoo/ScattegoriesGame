@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Brand from "./Brand.vue";
-import { useGameConfigStore } from "@/store/lobbyConfig";
+import { useGameConfigStore } from "@/store/store";
 
 const gameConfigStore = useGameConfigStore();
 

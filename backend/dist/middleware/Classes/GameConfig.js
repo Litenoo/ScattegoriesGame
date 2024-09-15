@@ -19,11 +19,16 @@ class GameConfig {
         return this.categories;
     }
     setGameConfig(gameConfig) {
-        console.log("settinGame config : ", gameConfig);
-        this.categories = gameConfig.categories;
-        this.characters = gameConfig.characters;
-        this.settings = gameConfig.settings;
-        console.log("this.categories:", this.categories);
+        try {
+            console.log("settinGame config : ", gameConfig);
+            this.categories = gameConfig.categories;
+            this.characters = gameConfig.characters;
+            this.settings = gameConfig.settings;
+            console.log("this.categories:", this.categories);
+        }
+        catch (err) {
+            console.log("Wrong game config structure.");
+        }
     }
 }
 exports.GameConfig = GameConfig;

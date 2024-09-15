@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useGameConfigStore } from '@/store/lobbyConfig';
+import { useGameConfigStore } from '@/store/store';
 import CategoryTile from './CategoryTile.vue';
 import submitButton from './submitButton.vue';
 

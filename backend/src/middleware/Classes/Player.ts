@@ -15,7 +15,7 @@ export default class Player {
     ) { }
 
     public scoreUp(value: number) {
-        this.score = + value;
+        this.score =+ value;
     }
 
     public get getScore() {

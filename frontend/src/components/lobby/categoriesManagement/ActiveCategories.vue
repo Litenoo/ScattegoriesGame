@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CategoryTile from './CategoryTile.vue';
-import { useGameConfigStore } from '@/store/lobbyConfig';
+import { useGameConfigStore } from '@/store/store';
 import { ref } from "vue";
 
 const gameConfig = useGameConfigStore();

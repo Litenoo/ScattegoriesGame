@@ -38,7 +38,7 @@
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.vue"
-, "src/store/lobbyConfig.ts"  ],
+, "src/store/store.ts"  ],
   "exclude": [
     "node_modules",
   ],

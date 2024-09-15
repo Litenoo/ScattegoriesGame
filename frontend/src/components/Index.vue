@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import router from "../router.js";
 
-import { useGameConfigStore } from "../store/lobbyConfig.js";
+import { useGameConfigStore } from "../store/store.js";
 import Brand from "./Brand.vue";
 
 const gameConfig = useGameConfigStore();

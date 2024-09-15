@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { useClipboard } from "@vueuse/core";
 import StartButton from './StartButton.vue';
-import { useGameConfigStore } from '@/store/lobbyConfig.js';
+import { useGameConfigStore } from '@/store/store.js';
 
 const store = useGameConfigStore(); // neessary to make store work correctly.
 

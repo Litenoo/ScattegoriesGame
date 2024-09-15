@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { useGameConfigStore } from "../../../store/lobbyConfig";
+import { useGameConfigStore } from "../../../store/store";
 const props = defineProps({ char: String });
 
 const store = useGameConfigStore();

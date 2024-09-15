@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGameConfigStore } from "@/store/lobbyConfig";
+import { useGameConfigStore } from "@/store/store";
 import TextInput from "./TextInput.vue";
 
 const store = useGameConfigStore();

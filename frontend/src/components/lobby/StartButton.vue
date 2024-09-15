@@ -1,5 +1,5 @@
 <script setup>
-import { useGameConfigStore } from "../../store/lobbyConfig";
+import { useGameConfigStore } from "../../store/store";
 
 const store = useGameConfigStore();
 

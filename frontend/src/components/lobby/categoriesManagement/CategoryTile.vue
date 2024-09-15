@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGameConfigStore } from '../../../store/lobbyConfig';
+import { useGameConfigStore } from '../../../store/store';
 
 const props = defineProps({ category: String });
 const store = useGameConfigStore();

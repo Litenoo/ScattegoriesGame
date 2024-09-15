@@ -1,10 +1,10 @@
 import Player from "./Player";
-import { GameConfig, GameConfigStructure } from "./GameConfig";
+import { GameConfig, GameConfigStructure, Settings } from "./GameConfig";
 import { io } from "../app";
 
 export default class Room {
     private players: Player[] = [];
-    readonly gameConfig: GameConfig | undefined;
+    readonly gameConfig: GameConfig = new GameConfig({maxPlayersQuantity: 10, playTimeInSeconds: 10, roundsQuantity: 10}, [], []);
     private currentRound: number = 0;
 
     constructor(
@@ -28,10 +28,9 @@ export default class Room {
         return mates;
     }
 
-
     beginGame(gameConfig: GameConfigStructure) {
-        console.log("Updating gameConfi : ", gameConfig); // k
-        this.gameConfig?.setGameConfig(gameConfig); // error here
+        console.log("Updating gameConfig : ", gameConfig);
+        this.gameConfig?.setGameConfig(gameConfig);
         this.playerList.forEach(player => {
             io.to(player.socketId).emit("gameBegins", this.roomMates);
         });

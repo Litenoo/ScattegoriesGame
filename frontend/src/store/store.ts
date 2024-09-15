@@ -77,4 +77,5 @@ const store = useGameConfigStore();
 socket.on("gameStarted", (categories: string[]) => {
     store.gameConfig.setCategories = categories;
     console.log("Game starting with categories: ", categories);
+    router.push("/game")
 });

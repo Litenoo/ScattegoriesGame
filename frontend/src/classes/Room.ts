@@ -14,6 +14,10 @@ export default class Room {
         this.players = roomData.players;
     }
 
+    public gameBegins(){
+
+    }
+
     public get roomMates(){
         return this.players;
     }
