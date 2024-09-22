@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
-    { path: "/", name: "index", component: () => import('./components/Index.vue') },
-    { path: "/join", name: "join", component: () => import('./components/JoinGame.vue') },
-    { path: "/lobby", name: "lobby", component: () => import('./components/lobby/Lobby.vue') },
+    { path: "/", name: "index", component: () => import('./templates/Index.vue') },
+    { path: "/join", name: "join", component: () => import('./templates/JoinGame.vue') },
+    { path: "/lobby", name: "lobby", component: () => import('./templates/Lobby.vue') },
 ];
 
 const router = createRouter({
@@ -12,17 +12,6 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    // if (to.path !== "/") {
-    //     if (localStorage.getItem("userId")) {
-    //         console.log("has userId");
-    //         next();
-    //     } else {
-    //         console.log("not userId");
-    //         next({ name: "index" });
-    //     }
-    // }else{
-    //     next();
-    // }
     next();
 });
 

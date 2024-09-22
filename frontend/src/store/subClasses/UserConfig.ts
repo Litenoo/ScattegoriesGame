@@ -1,10 +1,20 @@
 import nicknames from "@/store/nicknames.json";
 import axios from "axios";
+import { useGameConfigStore } from "@/store/store";
+import { ref, Ref } from "vue";
+
+const store = useGameConfigStore();
+
+export interface Answear {
+    category: string;
+    answear: string;
+}
 
 export default class Player {
-    private username: string|undefined;
+    private username: string | undefined;
     private userId: string | undefined;
     private isHost: boolean = false;
+    public answears: Ref<Answear>[] = store.gameConfig.getCategories.map((category: string) => ref({ category: category, answear: "" }));
 
     public async init(username: string | undefined) {
         await this.generateUserId();
@@ -21,7 +31,7 @@ export default class Player {
         }
     }
 
-    public setUsername(newUsername: string|undefined = undefined) {
+    public setUsername(newUsername: string | undefined = undefined) {
         this.username = newUsername ? newUsername : randomName();
 
         function randomName() {

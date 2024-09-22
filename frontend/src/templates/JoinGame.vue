@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import Brand from "./Brand.vue";
+import Brand from "@/components/general/Brand.vue";
 import { useGameConfigStore } from "@/store/store";
 
 const gameConfigStore = useGameConfigStore();
@@ -23,4 +23,4 @@ function joinRoom() {
             <button @click="joinRoom">Join</button>
         </div>
     </div>
-</template>
+</template> 

@@ -1,4 +1,4 @@
-import { RefreshPlayersResponse, RoomMate } from "./serverResponses";
+import { RefreshPlayersResponse, RoomMate } from "@/classes/serverResponses";
 
 export default class Room {
     private roomId: string | null = null;

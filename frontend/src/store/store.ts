@@ -4,9 +4,9 @@ import router from "../router.js";
 import socket from "../socket.js";
 
 import { RefreshPlayersResponse } from "@/classes/serverResponses.js";
-import GameConfig from "@/classes/GameConfig.js";
-import UserConfig from "@/classes/UserConfig.js";
-import Room from "@/classes/Room.js";
+import GameConfig from "@/store/subClasses/GameConfig.js";
+import UserConfig from "@/store/subClasses/UserConfig.js";
+import Room from "@/store/subClasses/RoomConfig.js";
 
 
 export const useGameConfigStore = defineStore("gameConfig", {

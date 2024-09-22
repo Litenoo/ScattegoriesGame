@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import CharacterSelect from './characterSelect/CharacterSelect.vue';
-import CategoriesSelect from './categoriesManagement/CategoriesSelect.vue';
-import ActiveCategories from "./categoriesManagement/ActiveCategories.vue";
-import SettingForm from "./settingsInputs/SettingForm.vue";
+import CharacterSelect from './settings/CharacterSelect.vue';
+import CategoriesSelect from './categories/CategoriesSelect.vue';
+import ActiveCategories from "./categories/ActiveCategories.vue";
+import SettingForm from "./settings/SettingForm.vue";
 </script>
 
 <template>

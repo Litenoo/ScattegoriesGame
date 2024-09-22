@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Settings from "./Settings.vue";
-import PlayerList from "./PlayersList.vue";
+import Settings from "@/components/lobby/Settings.vue";
+import PlayerList from "@/components/lobby/PlayersList.vue";
 </script>
 
 <template>

@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { Ref } from "vue";
+import { Answear } from "@/store/subClasses/UserConfig";
+
 const props = defineProps<{
-    referenceValue: string,
+    referenceValue: Ref<Answear>,
     title: string,
 }>();
 

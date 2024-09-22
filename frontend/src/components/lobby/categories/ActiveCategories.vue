@@ -3,9 +3,9 @@ import CategoryTile from './CategoryTile.vue';
 import { useGameConfigStore } from '@/store/store';
 import { ref } from "vue";
 
-const gameConfig = useGameConfigStore();
+const store = useGameConfigStore();
 
-const categories = ref(gameConfig.gameConfig?.categories);
+const categories = ref(store.gameConfig?.getCategories);
 
 </script>
 

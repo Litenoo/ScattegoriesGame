@@ -1,4 +1,4 @@
-import characterSet from "../store/alphabet.json";
+import characterSet from "../alphabet.json";
 
 class Settings {
     constructor(
@@ -7,13 +7,13 @@ class Settings {
         public roundsQuantity = 10,
     ) { }
 
-    public set setMaxPlayerQuantity(value: number){
+    public set setMaxPlayerQuantity(value: number) {
         this.maxPlayersQuantity = value;
     }
-    public set setPlayTimeInSeconds(value: number){
+    public set setPlayTimeInSeconds(value: number) {
         this.playTimeInSeconds = value;
     }
-    public set setRoundsQuantity(value: number){
+    public set setRoundsQuantity(value: number) {
         this.maxPlayersQuantity = value;
     }
 }
@@ -21,28 +21,28 @@ class Settings {
 export default class defaultConfig {
     readonly settings = new Settings();
     readonly characters: string[] = characterSet.alphabet;
-    private categories: string[] = ["City", "Country", "River"];
+    private _categories: string[] = ["City", "Country", "River"];
 
     public get getSettings(): Settings {
         return this.settings;
     }
 
-    public set setCategories(categories: string[]){
-        this.categories= categories
+    public set setCategories(categories: string[]) {
+        this._categories = categories;
     }
 
-    public get getCategories(){
-        return this.categories;
+    public get getCategories() {
+        return this._categories;
     }
 
     public pushCategory(category: string): void {
-        this.categories.push(category);
+        this._categories.push(category);
     }
 
     public removeCategory(category: string): void {
-        const index = this.categories.findIndex(current => current === category);
+        const index = this._categories.findIndex(current => current === category);
         if (index !== -1) {
-            this.categories.splice(index, 1);
+            this._categories.splice(index, 1);
         }
     }
 
