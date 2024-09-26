@@ -6,7 +6,8 @@ import { io } from "./app";
 
 import Room from "./Classes/Room";
 import Player from "./Classes/Player";
-import { GameConfigStructure } from "./Classes/GameConfig";
+import { GameConfigInterface } from "./Classes/GameConfig";
+import Answear from "@/middleware/Classes/AnswearInput"
 
 const lobbies: Room[] = [];
 
@@ -40,18 +41,11 @@ export function createLobby(socket: Socket, host: Player): string | undefined {
    }
 }
 
-export function startGame(userId: string, gameConfig: GameConfigStructure) {
+export function startGame(userId: string, gameConfig: GameConfigInterface) {
    const room = findRoomByPlayerId(userId);
 
    if (room?.playerList.some(player => player.userId === userId && player.isHost === true)) {
       room.beginGame(gameConfig);
-      console.log("RECEIVED GAME CONF : ", gameConfig);
-
-      const categories = room.gameConfig?.getCategories;
-      console.log("sending game starting with categories : ", categories);
-      room.playerList.forEach(player => {
-         io.to(player.socketId).emit("gameStarted", { categories: categories });
-      });
    } else {
       console.log("Denied, player who started the game is non host."); //dev
    }
@@ -75,6 +69,15 @@ export function refreshPlayers(userId: string) {
       }
    } catch (err) {
       logger.error("Unexpected Error : ", err);
+   }
+}
+
+export function collectAnswear(userId: string, answears: Answear[]) {
+   const room = findRoomByPlayerId(userId);
+   const player = room?.playerList.find((player) => player.userId === userId);
+   
+   if(player){
+      player.pushAnswears(...answears);
    }
 }
 

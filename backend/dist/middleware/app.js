@@ -65,4 +65,6 @@ exports.io.on('connection', (socket) => {
     socket.on("startGame", (userId, gameConfig) => {
         (0, socketFunctions_js_1.startGame)(userId, gameConfig);
     });
+    socket.on("answearsResponse", (userId, response) => {
+    });
 });

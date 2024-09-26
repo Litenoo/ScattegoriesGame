@@ -24,7 +24,7 @@ class Player {
     }
     pushAnswears(...answears) {
         answears.map(answear => {
-            this.answears.push({ value: answear, rate: 0 });
+            this.answears.push({ answear: answear.answear, category: answear.category, rating: 0 });
         });
     }
     clearAnswears() {

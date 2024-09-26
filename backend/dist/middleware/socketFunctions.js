@@ -3,10 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.joinRoom = joinRoom;
-exports.createLobby = createLobby;
-exports.startGame = startGame;
-exports.refreshPlayers = refreshPlayers;
+exports.collectAnswear = exports.refreshPlayers = exports.startGame = exports.createLobby = exports.joinRoom = void 0;
 const logger_1 = __importDefault(require("./logger"));
 const randomstring_1 = __importDefault(require("randomstring"));
 const app_1 = require("./app");
@@ -29,6 +26,7 @@ function joinRoom(socket, userId, roomId, name) {
         logger_1.default.error("Unexpected Error : " + err);
     }
 }
+exports.joinRoom = joinRoom;
 function createLobby(socket, host) {
     try {
         const date = new Date();
@@ -42,21 +40,17 @@ function createLobby(socket, host) {
         logger_1.default.error("Unexpected Error : " + err);
     }
 }
+exports.createLobby = createLobby;
 function startGame(userId, gameConfig) {
     const room = findRoomByPlayerId(userId);
     if (room?.playerList.some(player => player.userId === userId && player.isHost === true)) {
         room.beginGame(gameConfig);
-        console.log("RECEIVED GAME CONF : ", gameConfig);
-        const categories = room.gameConfig?.getCategories;
-        console.log("sending game starting with categories : ", categories);
-        room.playerList.forEach(player => {
-            app_1.io.to(player.socketId).emit("gameStarted", { categories: categories });
-        });
     }
     else {
         console.log("Denied, player who started the game is non host.");
     }
 }
+exports.startGame = startGame;
 function refreshPlayers(userId) {
     try {
         console.log("Refreshing players list for userId : ", userId);
@@ -77,6 +71,15 @@ function refreshPlayers(userId) {
         logger_1.default.error("Unexpected Error : ", err);
     }
 }
+exports.refreshPlayers = refreshPlayers;
+function collectAnswear(userId, answears) {
+    const room = findRoomByPlayerId(userId);
+    const player = room?.playerList.find((player) => player.userId === userId);
+    if (player) {
+        player.pushAnswears(...answears);
+    }
+}
+exports.collectAnswear = collectAnswear;
 function findRoomByPlayerId(userId) {
     const room = lobbies.find(room => {
         return room.playerList.some(player => player.userId === userId);

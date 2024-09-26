@@ -1,6 +1,9 @@
+import AnswearInput from "@/middleware/Classes/AnswearInput"
+
 interface Answear {
-    value: string | undefined;
-    rate: number;
+    category: string|undefined;
+    answear: string | undefined;
+    rating: number;
 }
 
 export default class Player {
@@ -26,9 +29,9 @@ export default class Player {
         this.score = 0;
     }
 
-    public pushAnswears(...answears: string[]) {
+    public pushAnswears(...answears: AnswearInput[]) {
         answears.map(answear => {
-            this.answears.push({ value: answear, rate: 0 });
+            this.answears.push({ answear: answear.answear, category: answear.category, rating: 0 });
         });
     }
 

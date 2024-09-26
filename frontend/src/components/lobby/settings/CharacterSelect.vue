@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import Character from './Character.vue';
 
 const characters = [

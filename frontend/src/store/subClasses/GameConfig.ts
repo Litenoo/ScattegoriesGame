@@ -1,4 +1,5 @@
 import characterSet from "../alphabet.json";
+import gameConfInterface from "./GameConfigInt.js";
 
 class Settings {
     constructor(
@@ -23,6 +24,7 @@ export default class defaultConfig {
     readonly characters: string[] = characterSet.alphabet;
     private _categories: string[] = ["City", "Country", "River"];
 
+
     public get getSettings(): Settings {
         return this.settings;
     }
@@ -31,7 +33,7 @@ export default class defaultConfig {
         this._categories = categories;
     }
 
-    public get getCategories() {
+    public get categories() {
         return this._categories;
     }
 
@@ -56,5 +58,17 @@ export default class defaultConfig {
             }
         }
         console.log(this.characters)
+    }
+
+    public get getConfig(): gameConfInterface {
+        return {
+            categories: this.categories,
+            characters: this.characters,
+            settings: {
+                maxPlayerCount: this.settings.maxPlayersQuantity,
+                roundsQuantity: this.settings.roundsQuantity,
+                playtime: this.settings.playTimeInSeconds,
+            }
+        }
     }
 }

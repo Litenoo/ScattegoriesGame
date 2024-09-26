@@ -20,11 +20,11 @@ class GameConfig {
     }
     setGameConfig(gameConfig) {
         try {
-            console.log("settinGame config : ", gameConfig);
+            console.log("received config : ", gameConfig);
             this.categories = gameConfig.categories;
             this.characters = gameConfig.characters;
             this.settings = gameConfig.settings;
-            console.log("this.categories:", this.categories);
+            console.log("current gameConfig :", this);
         }
         catch (err) {
             console.log("Wrong game config structure.");

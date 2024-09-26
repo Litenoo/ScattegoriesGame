@@ -8,6 +8,8 @@ import GameConfig from "@/store/subClasses/GameConfig.js";
 import UserConfig from "@/store/subClasses/UserConfig.js";
 import Room from "@/store/subClasses/RoomConfig.js";
 
+import gameConfigInterface from "@/store/subClasses/GameConfigInt.js";
+
 
 export const useGameConfigStore = defineStore("gameConfig", {
     state: (): { userData: UserConfig | null, currentRoom: Room, gameConfig: GameConfig } => ({
@@ -17,13 +19,13 @@ export const useGameConfigStore = defineStore("gameConfig", {
     }),
     persist: true,
     actions: {
-        async initUserData(username: string|undefined) { // Check if it may be done more efficient DEV
+        async initUserData(username: string | undefined) { // Check if it may be done more efficient DEV
             const userConfig = new UserConfig();
             await userConfig.init(username);
             this.userData = userConfig;
         },
         async validateUserInit(next: Function) {
-            if (this.userData?.getUsername ) {
+            if (this.userData?.getUsername) {
                 if (next) { next() };
             } else {
                 await this.initUserData(this.userData?.getUsername);
@@ -65,8 +67,15 @@ export const useGameConfigStore = defineStore("gameConfig", {
             });
         },
         async startGame() {
-            await this.validateUserInit(()=>{
-                socket.emit("startGame", this.userData?.getUserId, this.gameConfig);
+            await this.validateUserInit(() => {
+                const gameConf: gameConfigInterface = this.gameConfig.getConfig;
+                console.log("Sending config : ", gameConf);
+                socket.emit("startGame", this.userData?.getUserId, gameConf);
+            });
+        },
+        async initAnswears() {
+            await this.validateUserInit(() => {
+                this.currentRoom.setupAnswears(this.gameConfig.categories);
             });
         }
     },
@@ -74,8 +83,9 @@ export const useGameConfigStore = defineStore("gameConfig", {
 
 const store = useGameConfigStore();
 
-socket.on("gameStarted", (categories: string[]) => {
+socket.on("gameBegins", async (categories: string[]) => {
     store.gameConfig.setCategories = categories;
-    console.log("Game starting with categories: ", categories);
-    router.push("/game")
+    console.log("gameStarted categories log :", categories, "target: ", store.gameConfig.categories);
+    await store.initAnswears();
+    router.push("/form");
 });

@@ -1,16 +1,15 @@
 import Player from "./Player";
 
 export interface Settings {
-    maxPlayersQuantity: number,
-    playTimeInSeconds: number,
+    maxPlayerCount: number,
     roundsQuantity: number,
+    playtime: number,
 }
 
-export interface GameConfigStructure {
+export interface GameConfigInterface {
     settings: Settings;
     characters: string[];
     categories: string[];
-    players: Player[];
 }
 
 export class GameConfig {
@@ -30,13 +29,13 @@ export class GameConfig {
         return this.categories;
     }
 
-    public setGameConfig(gameConfig: GameConfigStructure){
+    public setGameConfig(gameConfig: GameConfigInterface){
         try{
-            console.log("settinGame config : ", gameConfig);
+            console.log("received config : ", gameConfig);
             this.categories = gameConfig.categories;
             this.characters = gameConfig.characters;
             this.settings = gameConfig.settings;
-            console.log("this.categories:", this.categories);
+            console.log("current gameConfig :", this);
         }catch(err){
             console.log("Wrong game config structure.");
         }

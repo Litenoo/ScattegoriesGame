@@ -7,7 +7,7 @@ class Room {
     created;
     host;
     players = [];
-    gameConfig = new GameConfig_1.GameConfig({ maxPlayersQuantity: 10, playTimeInSeconds: 10, roundsQuantity: 10 }, [], []);
+    gameConfig = new GameConfig_1.GameConfig({ maxPlayerCount: 10, playtime: 10, roundsQuantity: 10 }, [], []);
     currentRound = 0;
     constructor(id, created, host) {
         this.id = id;
@@ -29,7 +29,7 @@ class Room {
         console.log("Updating gameConfig : ", gameConfig);
         this.gameConfig?.setGameConfig(gameConfig);
         this.playerList.forEach(player => {
-            app_1.io.to(player.socketId).emit("gameBegins", this.roomMates);
+            app_1.io.to(player.socketId).emit("gameBegins", this.gameConfig.getCategories);
         });
     }
     roundIncrement() {

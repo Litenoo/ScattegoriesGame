@@ -5,7 +5,7 @@ import { ref } from "vue";
 
 const store = useGameConfigStore();
 
-const categories = ref(store.gameConfig?.getCategories);
+const categories = ref(store.gameConfig?.categories);
 
 </script>
 

@@ -4,7 +4,7 @@ import randomstring from "randomstring";
 import cors from 'cors';
 import { Server, Socket } from "socket.io";
 import { createServer } from "http";
-import { GameConfigStructure } from './Classes/GameConfig.js';
+import { GameConfigInterface } from './Classes/GameConfig.js';
 
 import logger from "./logger.js";
 import { joinRoom, createLobby, refreshPlayers, startGame } from "./socketFunctions.js";
@@ -69,7 +69,11 @@ io.on('connection', (socket: Socket) => {
       joinRoom(socket, userId, roomId, username);
    });
 
-   socket.on("startGame", (userId: string, gameConfig: GameConfigStructure) => { // validate if user is host // Btw here will be gameConfig config sent as prop
+   socket.on("startGame", (userId: string, gameConfig: GameConfigInterface) => { // validate if user is host // Btw here will be gameConfig config sent as prop
       startGame(userId, gameConfig);
    });
+
+   socket.on("answearsResponse", (userId, response)=>{ // add Answear response as type
+
+   })
 });
