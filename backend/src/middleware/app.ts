@@ -69,11 +69,7 @@ io.on('connection', (socket: Socket) => {
       joinRoom(socket, userId, roomId, username);
    });
 
-   socket.on("startGame", (userId: string, gameConfig: GameConfigInterface) => { // validate if user is host // Btw here will be gameConfig config sent as prop
-      startGame(userId, gameConfig);
+   socket.on("startGame", (userId: string, gameConfig: GameConfigInterface) => { // It sends socket to Room, and rest of the socket operations are done there.
+      startGame(userId, gameConfig, socket);
    });
-
-   socket.on("answearsResponse", (userId, response)=>{ // add Answear response as type
-
-   })
 });

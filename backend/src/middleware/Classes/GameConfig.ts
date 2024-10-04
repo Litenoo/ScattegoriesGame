@@ -1,9 +1,9 @@
 import Player from "./Player";
 
 export interface Settings {
-    maxPlayerCount: number,
-    roundsQuantity: number,
-    playtime: number,
+    readonly maxPlayerCount: number,
+    readonly roundsQuantity: number,
+    readonly playtime: number,
 }
 
 export interface GameConfigInterface {
@@ -14,30 +14,35 @@ export interface GameConfigInterface {
 
 export class GameConfig {
     constructor(
-        private settings: Settings,
-        private characters: string[],
-        private categories: string[],
+        private _settings: Settings,
+        private _characters: string[],
+        private _categories: string[],
     ) {}
 
-    public get getSettings() {
-        return { 
-            ...this
-        };
+    public get getCategories(){
+        return this._categories;
     }
 
-    public get getCategories(){
-        return this.categories;
+    public get settings(){
+        return this._settings;
     }
 
     public setGameConfig(gameConfig: GameConfigInterface){
         try{
             console.log("received config : ", gameConfig);
-            this.categories = gameConfig.categories;
-            this.characters = gameConfig.characters;
-            this.settings = gameConfig.settings;
+            this._categories = gameConfig.categories;
+            this._characters = gameConfig.characters;
+            this._settings = gameConfig.settings;
             console.log("current gameConfig :", this);
         }catch(err){
             console.log("Wrong game config structure.");
         }
+    }
+
+    public getRandomLetter(){
+        const index = Math.floor(Math.random() * this._characters.length);
+        const letter = this._characters[index];
+        this._characters.splice(index, 1); // The delete is safe, because of its primitive values array.
+        return letter;
     }
 }

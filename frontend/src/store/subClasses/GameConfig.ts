@@ -23,6 +23,7 @@ export default class defaultConfig {
     readonly settings = new Settings();
     readonly characters: string[] = characterSet.alphabet;
     private _categories: string[] = ["City", "Country", "River"];
+    private _currentLetter: string | undefined;
 
 
     public get getSettings(): Settings {
@@ -31,6 +32,10 @@ export default class defaultConfig {
 
     public set setCategories(categories: string[]) {
         this._categories = categories;
+    }
+    
+    public set currentLetter(newLetter: string) {
+        this._currentLetter = newLetter;
     }
 
     public get categories() {
@@ -48,7 +53,7 @@ export default class defaultConfig {
         }
     }
 
-    public switchCharacter(character: string): void {
+    public switchCharacter(character: string): void { // for _characters
         const index = this.characters.findIndex(current => current === character);
         if (character.length === 1) {
             if (index !== -1) {

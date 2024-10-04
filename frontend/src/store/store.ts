@@ -83,9 +83,8 @@ export const useGameConfigStore = defineStore("gameConfig", {
 
 const store = useGameConfigStore();
 
-socket.on("gameBegins", async (categories: string[]) => {
+socket.on("newRound", async (categories: string[], playTime: number) => {
     store.gameConfig.setCategories = categories;
-    console.log("gameStarted categories log :", categories, "target: ", store.gameConfig.categories);
     await store.initAnswears();
     router.push("/form");
 });

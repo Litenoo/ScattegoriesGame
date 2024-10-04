@@ -63,8 +63,6 @@ exports.io.on('connection', (socket) => {
         (0, socketFunctions_js_1.joinRoom)(socket, userId, roomId, username);
     });
     socket.on("startGame", (userId, gameConfig) => {
-        (0, socketFunctions_js_1.startGame)(userId, gameConfig);
-    });
-    socket.on("answearsResponse", (userId, response) => {
+        (0, socketFunctions_js_1.startGame)(userId, gameConfig, socket);
     });
 });

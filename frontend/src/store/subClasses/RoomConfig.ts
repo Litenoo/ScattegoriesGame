@@ -2,15 +2,15 @@ import { RefreshPlayersResponse, RoomMate } from "@/classes/serverResponses";
 import { ref, Ref } from "vue";
 import socket from "@/socket";
 
-export interface Answear {
+export interface Answer {
     category: string;
-    answear: Ref<string>;
+    answer: Ref<string>;
 }
 
 export default class Room {
     private roomId: string | null = null;
     private players: RoomMate[] = [];
-    private _answears: Answear[] = [];
+    private _answers: Answer[] = [];
     public time: Ref<number> = ref(0);
 
     constructor(){
@@ -28,7 +28,7 @@ export default class Room {
     }
 
     public setupAnswears(categories: string[]) {
-        this._answears = categories.map((category) => ({ category: category, answear: ref("") })); // ERROR .map is not a function
+        this._answers = categories.map((category) => ({ category: category, answer: ref("") })); // ERROR .map is not a function
     }
 
     public commitAnswears() {
@@ -57,8 +57,8 @@ export default class Room {
     //     return this._time;
     // }
 
-    public get answears(): Answear[] {
-        return this._answears;
+    public get answears(): Answer[] {
+        return this._answers;
     }
 
     public get roomMates() {

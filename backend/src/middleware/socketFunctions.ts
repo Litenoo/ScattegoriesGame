@@ -7,7 +7,7 @@ import { io } from "./app";
 import Room from "./Classes/Room";
 import Player from "./Classes/Player";
 import { GameConfigInterface } from "./Classes/GameConfig";
-import Answear from "@/middleware/Classes/AnswearInput"
+import Answear from "@/middleware/Classes/AnswearInput";
 
 const lobbies: Room[] = [];
 
@@ -27,7 +27,7 @@ export function joinRoom(socket: Socket, userId: string, roomId: string, name: s
    }
 }
 
-export function createLobby(socket: Socket, host: Player): string | undefined {
+export function createLobby(socket: Socket, host: Player): string | undefined { // remove socket
    try {
       const date = new Date();
       const lobbyId = randomstring.generate(12);
@@ -41,11 +41,11 @@ export function createLobby(socket: Socket, host: Player): string | undefined {
    }
 }
 
-export function startGame(userId: string, gameConfig: GameConfigInterface) {
+export function startGame(userId: string, gameConfig: GameConfigInterface, socket: Socket) {
    const room = findRoomByPlayerId(userId);
 
    if (room?.playerList.some(player => player.userId === userId && player.isHost === true)) {
-      room.beginGame(gameConfig);
+      room.beginGame(gameConfig, socket);
    } else {
       console.log("Denied, player who started the game is non host."); //dev
    }
@@ -75,8 +75,8 @@ export function refreshPlayers(userId: string) {
 export function collectAnswear(userId: string, answears: Answear[]) {
    const room = findRoomByPlayerId(userId);
    const player = room?.playerList.find((player) => player.userId === userId);
-   
-   if(player){
+
+   if (player) {
       player.pushAnswears(...answears);
    }
 }

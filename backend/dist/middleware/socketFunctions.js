@@ -41,10 +41,10 @@ function createLobby(socket, host) {
     }
 }
 exports.createLobby = createLobby;
-function startGame(userId, gameConfig) {
+function startGame(userId, gameConfig, socket) {
     const room = findRoomByPlayerId(userId);
     if (room?.playerList.some(player => player.userId === userId && player.isHost === true)) {
-        room.beginGame(gameConfig);
+        room.beginGame(gameConfig, socket);
     }
     else {
         console.log("Denied, player who started the game is non host.");
