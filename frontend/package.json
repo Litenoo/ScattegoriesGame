@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@yourproject/shared": "1.0.0",
     "@vue/compiler-sfc": "^3.4.38",
     "@vue/runtime-core": "^3.4.38",
     "@vue/typescript": "^1.8.20",
@@ -35,5 +36,10 @@
   "main": "vite.config.js",
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "workspaces": [
+    "./backend",
+    "./frontend",
+    "./shared"
+  ]
 }

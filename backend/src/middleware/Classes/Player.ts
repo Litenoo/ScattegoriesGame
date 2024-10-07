@@ -1,14 +1,9 @@
-import AnswearInput from "@/middleware/Classes/AnswearInput"
-
-interface Answear {
-    category: string|undefined;
-    answear: string | undefined;
-    rating: number;
-}
+import AnswerInput from "@/middleware/Classes/AnswearInput"
+import { Answer, serverVotingResponse } from "shared/interfaces/voting";
 
 export default class Player {
     private score: number = 0;
-    private answears: Answear[] = [];
+    private _answers: Answer[] = [];
 
     constructor(
         public readonly username: string,
@@ -18,7 +13,11 @@ export default class Player {
     ) { }
 
     public scoreUp(value: number) {
-        this.score =+ value;
+        this.score = + value;
+    }
+
+    public get answers(): serverVotingResponse {
+        return {username: this.username, answers: this._answers};
     }
 
     public get getScore() {
@@ -29,13 +28,13 @@ export default class Player {
         this.score = 0;
     }
 
-    public pushAnswears(...answears: AnswearInput[]) {
+    public pushAnswears(...answears: AnswerInput[]) {
         answears.map(answear => {
-            this.answears.push({ answear: answear.answear, category: answear.category, rating: 0 });
+            this._answers.push({ answer: answear.answear, category: answear.category}); //change answear to answer
         });
     }
 
     public clearAnswears() {
-        this.answears = [];
+        this._answers = [];
     }
 }

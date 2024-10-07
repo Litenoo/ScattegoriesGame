@@ -1,6 +1,7 @@
 import { RefreshPlayersResponse, RoomMate } from "@/classes/serverResponses";
 import { ref, Ref } from "vue";
 import socket from "@/socket";
+import { serverVotingResponse } from "shared/interfaces/voting";
 
 export interface Answer {
     category: string;
@@ -12,6 +13,7 @@ export default class Room {
     private players: RoomMate[] = [];
     private _answers: Answer[] = [];
     public time: Ref<number> = ref(0);
+    private _currentVotingLabel: serverVotingResponse[] = []; //put interfaces there
 
     constructor(){
         console.log(this.time);
@@ -51,6 +53,14 @@ export default class Room {
         } else {
             console.error('this.time is not a ref.', this.time);
         }
+    }
+
+    public set updateVotingLabel(playersAnswears: serverVotingResponse[] ){ 
+        this._currentVotingLabel = playersAnswears;
+    }
+
+    public get votingLabel(){
+        return this._currentVotingLabel;
     }
 
     // public get time(){

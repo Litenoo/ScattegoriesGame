@@ -6,8 +6,8 @@ import { io } from "./app";
 
 import Room from "./Classes/Room";
 import Player from "./Classes/Player";
-import { GameConfigInterface } from "./Classes/GameConfig";
 import Answear from "@/middleware/Classes/AnswearInput";
+import { GameConfigInterface } from "./Classes/GameConfig";
 
 const lobbies: Room[] = [];
 

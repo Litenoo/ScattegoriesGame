@@ -10,7 +10,7 @@
     "noEmit": false,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "./", //broken before
     "strict": true,
     "esModuleInterop": true,
     "baseUrl": "./src",
@@ -22,6 +22,7 @@
     "paths": {
       "@/*": ["*"],
       "*": ["*", "*.js"],
+      "shared/*": ["../../shared/*"] //Someting was messed here and on rootDIr
     }
   },
   "include": [

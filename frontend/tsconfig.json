@@ -10,7 +10,7 @@
     "noEmit": false,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "../",
     "strict": true,
     "esModuleInterop": true,
     "baseUrl": "./src",
@@ -32,13 +32,16 @@
         "*",
         "*.js"
       ],
+      "shared/*": ["../../shared/*"]
     }
   },
   "include": [
+    "src",
     "src/**/*.ts",
     "src/**/*.d.ts",
-    "src/**/*.vue"
-, "src/store/store.ts"  ],
+    "src/**/*.vue",
+    "../shared"
+, "src/store/store.ts", "router.ts"  ],
   "exclude": [
     "node_modules",
   ],

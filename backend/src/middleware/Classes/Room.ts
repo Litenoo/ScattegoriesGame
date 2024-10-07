@@ -1,5 +1,6 @@
 import Player from "./Player";
 import { GameConfig, GameConfigInterface, Settings } from "./GameConfig";
+import { serverVotingResponse } from "shared/interfaces/voting";
 import { io } from "../app";
 import { Socket } from "socket.io";
 
@@ -31,55 +32,75 @@ export default class Room {
     }
 
     public beginGame(gameConfig: GameConfigInterface, socket: Socket) {
-        console.log("Updating gameConfig : ", gameConfig);
         if (socket) {
             this.gameConfig?.setGameConfig(gameConfig);
             this._socket = socket;
-            this.roundStarts();
+            this.roundExecute();
         } else {
             console.log("no socket provided in beginGame");
         }
     }
 
-    public roundStarts() {
-        console.log("Round starts !, timeout :", this.gameConfig.settings.playtime * 1000);
+    public roundExecute() {
         const currentLetter = this.gameConfig.getRandomLetter();
+
         this.playerList.forEach(player => {
             io.to(player.socketId).emit("newRound", this.gameConfig.getCategories, this.gameConfig.settings.playtime, currentLetter);
         });
 
         setTimeout(() => {
-            this.players.forEach((player) => {
-                io.to(player.socketId).emit("collectAnswers");
-                console.log("Sended Answears request");
-            });
+            this.collectAnswers();
+        }, this.gameConfig.settings.playtime * 1000);
+    }
 
-            this._socket?.on("answersResponse", (userId, answears) => { //think about moving it externaly
-                console.log("Received answear from user :", userId, answears);
-                const player = this.players.find((player) => {player.userId === userId});
-                player?.pushAnswears(answears);
-            });
+    public collectAnswers() {
+        this.players.forEach((player) => {
+            io.to(player.socketId).emit("collectAnswers");
+        });
 
-            setTimeout(() => {
-                this.roundIncrement();
-                if (this.currentRound < this.gameConfig.settings.roundsQuantity) {
-                    this.roundStarts();
-                }
-                return;
-            }, 2000) //dev make it settable within settings
-        },
-            this.gameConfig.settings.playtime * 1000);
+        this._socket?.on("answersResponse", (userId, answears) => { //It may block execution !
+            console.log("log -1")
+            console.log("Received answear from someone wiuth user ID :", userId, answears); // ERROR I think it does not compile for some reason . Check dist folder. something messed up !
+            const player = this.findPlayerById(userId);
+            console.log("log0")
+            player?.pushAnswears(answears);
+        });
+        
+        console.log("log1 before set!");
+        setTimeout(() => {
+            console.log("voting timeout !");
+            this.voting();
+        }, 2000);
     }
 
     public voting() {
+        console.log("VOTING !");
+        let playersAnswers: serverVotingResponse[] = [];
+        this.players.forEach((player) => {
+            playersAnswers.push(player.answers);
+        });
+
         this.playerList.forEach(player => {
-            const playersAnswears = [];
-            io.to(player.socketId).emit("voting", this.gameConfig.getCategories, playersAnswears);
+            io.to(player.socketId).emit("votingRequest", this.gameConfig.getCategories, playersAnswers);
+            console.log("Sended :", this.gameConfig.getCategories, " - ", playersAnswers);
+
+            setTimeout(() => {
+                this.players.forEach((player) => {
+                    io.to(player.socketId).emit("collectVoting");
+                });
+                this._socket?.on("votingResponse", (userId, election) => {
+                    const player = this.findPlayerById(userId);
+                })
+            }, 30000) //Make it modifiable as votingTime setting
         });
     }
 
     //methods used during the game
     roundIncrement() {
         this.currentRound++;
+    }
+
+    findPlayerById(userId: string) {
+        return this.players.find(player => player.userId === userId);
     }
 }

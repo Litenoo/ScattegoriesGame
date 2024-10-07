@@ -6,7 +6,7 @@ class Player {
     socketId;
     isHost;
     score = 0;
-    answears = [];
+    _answers = [];
     constructor(username, userId, socketId, isHost) {
         this.username = username;
         this.userId = userId;
@@ -16,6 +16,9 @@ class Player {
     scoreUp(value) {
         this.score = +value;
     }
+    get answers() {
+        return { username: this.username, answers: this._answers };
+    }
     get getScore() {
         return this.score;
     }
@@ -24,11 +27,11 @@ class Player {
     }
     pushAnswears(...answears) {
         answears.map(answear => {
-            this.answears.push({ answear: answear.answear, category: answear.category, rating: 0 });
+            this._answers.push({ answer: answear.answear, category: answear.category });
         });
     }
     clearAnswears() {
-        this.answears = [];
+        this._answers = [];
     }
 }
 exports.default = Player;

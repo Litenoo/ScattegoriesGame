@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
 
-import router from "../router.js";
+import router from "../../router.js";
 import socket from "../socket.js";
 
 import { RefreshPlayersResponse } from "@/classes/serverResponses.js";
+import { serverVotingResponse, Answer} from "shared/interfaces/voting";
 import GameConfig from "@/store/subClasses/GameConfig.js";
 import UserConfig from "@/store/subClasses/UserConfig.js";
 import Room from "@/store/subClasses/RoomConfig.js";
@@ -87,4 +88,10 @@ socket.on("newRound", async (categories: string[], playTime: number) => {
     store.gameConfig.setCategories = categories;
     await store.initAnswears();
     router.push("/form");
+});
+
+socket.on("votingRequest", (categories: string[], playersAnswers: serverVotingResponse[]) => { // categories, {username, answers} //DEV think if categories are needed
+    store.currentRoom.updateVotingLabel = playersAnswers;
+    console.log("PLAYER ANSWERS :", playersAnswers);
+    router.push("voting");
 });
