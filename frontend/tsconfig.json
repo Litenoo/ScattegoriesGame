@@ -41,7 +41,7 @@
     "src/**/*.d.ts",
     "src/**/*.vue",
     "../shared"
-, "src/store/store.ts", "router.ts"  ],
+, "src/store/store.ts", "src/router.ts"  ],
   "exclude": [
     "node_modules",
   ],

@@ -10,7 +10,7 @@ const categories = store.gameConfig.categories;
 
 const answers: Answer[] = categories.map((category) => ({ category: category, answer: ref<string>("") }));
 
-socket.on("collectAnswers", () => { 
+socket.on("collectAnswers", () => {
     const userId = store.userData?.getUserId;
     answers.forEach(answer => {console.log(answer.answer.value)});
     const answerstoString = answers.map((answer)=>({category: answer.category, answer: answer.answer.value}));

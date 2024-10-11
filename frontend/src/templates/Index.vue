@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import router from "../../router.js";
+import router from "../router.js";
 
 import { useGameConfigStore } from "../store/store.js";
 import Brand from "@/components/general/Brand.vue";

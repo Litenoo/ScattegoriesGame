@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useGameConfigStore } from '@/store/store';
 import CategoryVote from "@/components/voting/CategoryVote.vue";
+import socket from "@/socket";
 
 const store = useGameConfigStore();
 

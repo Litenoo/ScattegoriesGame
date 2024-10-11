@@ -1,5 +1,5 @@
 import AnswerInput from "@/middleware/Classes/AnswearInput"
-import { Answer, serverVotingResponse } from "shared/interfaces/voting";
+import { Answer, serverVotingResponse } from "@scattegoriesgame/shared/interfaces/voting";
 
 export default class Player {
     private score: number = 0;

@@ -1,6 +1,6 @@
 import Player from "./Player";
 import { GameConfig, GameConfigInterface, Settings } from "./GameConfig";
-import { serverVotingResponse } from "shared/interfaces/voting";
+import { AnswerStruct } from "@scattegoriesgame/shared/interfaces/voting";
 import { io } from "../app";
 import { Socket } from "socket.io";
 
@@ -41,57 +41,77 @@ export default class Room {
         }
     }
 
-    public roundExecute() {
-        const currentLetter = this.gameConfig.getRandomLetter();
-
-        this.playerList.forEach(player => {
-            io.to(player.socketId).emit("newRound", this.gameConfig.getCategories, this.gameConfig.settings.playtime, currentLetter);
-        });
-
-        setTimeout(() => {
-            this.collectAnswers();
-        }, this.gameConfig.settings.playtime * 1000);
+    public async roundExecute() {
+        console.log("round Execute called !");
+        await this.provideCategoryPrompts();
+        await this.collectAnswers();
+        await this.provideVoting();
+        await this.collectVotingChoices();
     }
 
-    public collectAnswers() {
+    public async provideCategoryPrompts() {
+        console.log("provideCategoriesPromts called");
+        const categories = this.gameConfig.getCategories;
+        const playtime = this.gameConfig.settings.playtime;
+        const currentLetter = this.gameConfig.getRandomLetter();
+
+        this.playerList.forEach((player) => {
+            io.to(player.socketId).emit("provideCategoryPrompts", categories, playtime, currentLetter);
+        });
+
+        return new Promise<void>((resolve)=>{
+            setTimeout(() => {
+                resolve();
+            }, this.gameConfig.settings.playtime * 1000);
+        });
+    }
+
+    public async collectAnswers() {
+        console.log("collectAnswersCalled")
         this.players.forEach((player) => {
             io.to(player.socketId).emit("collectAnswers");
         });
 
-        this._socket?.on("answersResponse", (userId, answears) => { //It may block execution !
-            console.log("log -1")
-            console.log("Received answear from someone wiuth user ID :", userId, answears); // ERROR I think it does not compile for some reason . Check dist folder. something messed up !
+        this._socket?.on("answersResponse", (userId, answers) => {
+            console.log("Received answer : ", userId, answers);
             const player = this.findPlayerById(userId);
-            console.log("log0")
-            player?.pushAnswears(answears);
+            player?.pushAnswears(answers);
         });
-        
-        console.log("log1 before set!");
-        setTimeout(() => {
-            console.log("voting timeout !");
-            this.voting();
-        }, 2000);
+
+        return new Promise<void>((resolve)=>{
+            setTimeout(() => {
+                resolve();
+            }, 3000); // make it adjustable
+        });
     }
 
-    public voting() {
-        console.log("VOTING !");
-        let playersAnswers: serverVotingResponse[] = [];
+    public async provideVoting() {
+        //Gethering answers from users (they was set before)
+        const answers: AnswerStruct[] = [];
         this.players.forEach((player) => {
-            playersAnswers.push(player.answers);
+            answers.push(player.answers);
         });
 
-        this.playerList.forEach(player => {
-            io.to(player.socketId).emit("votingRequest", this.gameConfig.getCategories, playersAnswers);
-            console.log("Sended :", this.gameConfig.getCategories, " - ", playersAnswers);
+        //Sending answers to users
+        const categories = this.gameConfig.getCategories;
+        this.players.forEach((player) => {
+            io.to(player.socketId).emit("providingVoting", categories, answers);
+        });
 
+        return new Promise<void>((resolve)=>{
             setTimeout(() => {
-                this.players.forEach((player) => {
-                    io.to(player.socketId).emit("collectVoting");
-                });
-                this._socket?.on("votingResponse", (userId, election) => {
-                    const player = this.findPlayerById(userId);
-                })
-            }, 30000) //Make it modifiable as votingTime setting
+                resolve();
+            }, this.gameConfig.settings.playtime); // add votingTime property or make it after everyone accepts or even both.
+        });
+    }
+
+    public async collectVotingChoices() {
+        this.players.forEach((player) => {
+            io.to(player.socketId).emit("collectVotes");
+        });
+
+        this._socket?.on("votesResponse", (response)=>{
+
         });
     }
 

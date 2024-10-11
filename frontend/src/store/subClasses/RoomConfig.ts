@@ -13,7 +13,7 @@ export default class Room {
     private players: RoomMate[] = [];
     private _answers: Answer[] = [];
     public time: Ref<number> = ref(0);
-    private _currentVotingLabel: serverVotingResponse[] = []; //put interfaces there
+    private _currentVotingLabel: string[] = []; //put interfaces there
 
     constructor(){
         console.log(this.time);
@@ -55,7 +55,7 @@ export default class Room {
         }
     }
 
-    public set updateVotingLabel(playersAnswears: serverVotingResponse[] ){ 
+    public set updateVotingLabel(playersAnswears: string[] ){ 
         this._currentVotingLabel = playersAnswears;
     }
 
