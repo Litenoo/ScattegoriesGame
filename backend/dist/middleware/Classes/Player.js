@@ -25,10 +25,14 @@ class Player {
     clearScore() {
         this.score = 0;
     }
-    pushAnswears(...answears) {
-        answears.map(answear => {
-            this._answers.push({ answer: answear.answear, category: answear.category });
-        });
+    pushAnswears(answers) {
+        this._answers = [];
+        console.log("Answers array :", answers);
+        if (answers) {
+            answers.forEach(answer => {
+                this._answers.push(answer);
+            });
+        }
     }
     clearAnswears() {
         this._answers = [];

@@ -1,5 +1,4 @@
-import AnswerInput from "@/middleware/Classes/AnswearInput"
-import { Answer, serverVotingResponse } from "@scattegoriesgame/shared/interfaces/voting";
+import { Answer, AnswerStruct } from "@scattegoriesgame/shared/interfaces/voting";
 
 export default class Player {
     private score: number = 0;
@@ -16,8 +15,8 @@ export default class Player {
         this.score = + value;
     }
 
-    public get answers(): serverVotingResponse {
-        return {username: this.username, answers: this._answers};
+    public get answers(): AnswerStruct {
+        return { username: this.username, answers: this._answers };
     }
 
     public get getScore() {
@@ -28,10 +27,14 @@ export default class Player {
         this.score = 0;
     }
 
-    public pushAnswears(...answears: AnswerInput[]) {
-        answears.map(answear => {
-            this._answers.push({ answer: answear.answear, category: answear.category}); //change answear to answer
-        });
+    public pushAnswears(answers: Answer[]) {
+        this._answers = [];
+        console.log("Answers array :", answers);
+        if (answers) {
+            answers.forEach(answer => {
+                this._answers.push(answer);
+            });
+        }
     }
 
     public clearAnswears() {

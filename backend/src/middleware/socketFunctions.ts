@@ -6,8 +6,8 @@ import { io } from "./app";
 
 import Room from "./Classes/Room";
 import Player from "./Classes/Player";
-import Answear from "@/middleware/Classes/AnswearInput";
 import { GameConfigInterface } from "./Classes/GameConfig";
+import { Answer } from "@scattegoriesgame/shared/interfaces/voting";
 
 const lobbies: Room[] = [];
 
@@ -72,12 +72,12 @@ export function refreshPlayers(userId: string) {
    }
 }
 
-export function collectAnswear(userId: string, answears: Answear[]) {
+export function collectAnswear(userId: string, answers: Answer[]) {
    const room = findRoomByPlayerId(userId);
    const player = room?.playerList.find((player) => player.userId === userId);
 
    if (player) {
-      player.pushAnswears(...answears);
+      player.pushAnswears(answers);
    }
 }
 

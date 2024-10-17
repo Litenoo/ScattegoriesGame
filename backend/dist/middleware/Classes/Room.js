@@ -62,10 +62,10 @@ class Room {
         this.players.forEach((player) => {
             app_1.io.to(player.socketId).emit("collectAnswers");
         });
-        this._socket?.on("answersResponse", (userId, answers) => {
-            console.log("Received answer : ", userId, answers);
+        this._socket?.on("answersResponse", (userId, response) => {
+            console.log("Received answer : ", userId, response);
             const player = this.findPlayerById(userId);
-            player?.pushAnswears(answers);
+            player?.pushAnswears(response.answers);
         });
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -80,7 +80,7 @@ class Room {
         });
         const categories = this.gameConfig.getCategories;
         this.players.forEach((player) => {
-            app_1.io.to(player.socketId).emit("providingVoting", categories, answers);
+            app_1.io.to(player.socketId).emit("provideVoting", categories, answers);
         });
         return new Promise((resolve) => {
             setTimeout(() => {

@@ -72,11 +72,11 @@ function refreshPlayers(userId) {
     }
 }
 exports.refreshPlayers = refreshPlayers;
-function collectAnswear(userId, answears) {
+function collectAnswear(userId, answers) {
     const room = findRoomByPlayerId(userId);
     const player = room?.playerList.find((player) => player.userId === userId);
     if (player) {
-        player.pushAnswears(...answears);
+        player.pushAnswears(answers);
     }
 }
 exports.collectAnswear = collectAnswear;

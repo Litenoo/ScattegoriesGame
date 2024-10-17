@@ -9,17 +9,18 @@ export interface Answer {
     answer: string | undefined;
 }
 
-// Votings :
-export interface VotingStruct {
-    username: string;
-    choices: Choice[]
+// Votings responses :
+export interface VotingStruct { //Answer from user to server
+    username: string; // username of user who votes
+    choices: ChoicesByCategory[];
 }
 
-export interface ChoiceAnswer extends Answer {
-    choice: boolean;
+export interface ChoicesByCategory { //Choice grouped by category
+    category: string;
+    answers: CategoryVotesChoices;
 }
 
-export interface Choice {
-    username: string; //Username of user which answers belongs to.
-    answers: ChoiceAnswer;
+export interface CategoryVotesChoices { // Choice of user about roommates answers
+    username: string; // username of rommate who answered
+    answer: boolean; // Answer of user who rates answers
 }

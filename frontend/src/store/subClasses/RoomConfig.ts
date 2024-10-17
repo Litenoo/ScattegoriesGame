@@ -1,9 +1,9 @@
 import { RefreshPlayersResponse, RoomMate } from "@/classes/serverResponses";
 import { ref, Ref } from "vue";
 import socket from "@/socket";
-import { serverVotingResponse } from "shared/interfaces/voting";
+import { Answer } from "@scattegoriesgame/shared/interfaces/voting"; //Repair
 
-export interface Answer {
+export interface RefAnswer {
     category: string;
     answer: Ref<string>;
 }
@@ -11,11 +11,11 @@ export interface Answer {
 export default class Room {
     private roomId: string | null = null;
     private players: RoomMate[] = [];
-    private _answers: Answer[] = [];
+    private _answers: RefAnswer[] = [];
     public time: Ref<number> = ref(0);
     private _currentVotingLabel: string[] = []; //put interfaces there
 
-    constructor(){
+    constructor() {
         console.log(this.time);
     }
 
@@ -37,9 +37,9 @@ export default class Room {
         socket.emit("AnswearsEmit", this.answears);
     }
 
-    public timeInterval(){
-        if(this.time.value > 0){
-            setTimeout(()=>{
+    public timeInterval() {
+        if (this.time.value > 0) {
+            setTimeout(() => {
                 this.time.value++;
                 this.timeInterval();
             }, 1000);
@@ -55,11 +55,11 @@ export default class Room {
         }
     }
 
-    public set updateVotingLabel(playersAnswears: string[] ){ 
+    public set updateVotingLabel(playersAnswears: string[]) {
         this._currentVotingLabel = playersAnswears;
     }
 
-    public get votingLabel(){
+    public get votingLabel() {
         return this._currentVotingLabel;
     }
 
@@ -68,7 +68,10 @@ export default class Room {
     // }
 
     public get answears(): Answer[] {
-        return this._answers;
+        return this._answers.map((answer) => ({
+            category: answer.category,
+            answer: answer.answer.value,
+        }));
     }
 
     public get roomMates() {

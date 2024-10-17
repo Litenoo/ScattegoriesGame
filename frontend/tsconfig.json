@@ -10,7 +10,7 @@
     "noEmit": false,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "rootDir": "../",
+    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
     "baseUrl": "./src",

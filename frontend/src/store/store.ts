@@ -4,13 +4,11 @@ import router from "../router.js";
 import socket from "../socket.js";
 
 import { RefreshPlayersResponse } from "@/classes/serverResponses.js";
-import { AnswerStruct, Answer} from "shared/interfaces/voting";
+import { AnswerStruct, Answer } from "@scattegoriesgame/shared/interfaces/voting";
 import GameConfig from "@/store/subClasses/GameConfig.js";
 import UserConfig from "@/store/subClasses/UserConfig.js";
 import Room from "@/store/subClasses/RoomConfig.js";
 import gameConfigInterface from "@/store/subClasses/GameConfigInt.js";
-
-
 
 export const useGameConfigStore = defineStore("gameConfig", {
     state: (): { userData: UserConfig | null, currentRoom: Room, gameConfig: GameConfig } => ({
@@ -94,19 +92,26 @@ socket.on("provideCategoryPrompts", async (categories: string[], playTime: numbe
     router.push("/form");
 });
 
-socket.on("startVoting", (categories: string[], playersAnswers: string[]) => { // categories, {username, answers} //DEV think if categories are needed
+socket.on("provideVoting", (categories: string[], playersAnswers: string[]) => { // categories, {username, answers} //DEV think if categories are needed
     store.currentRoom.updateVotingLabel = playersAnswers;
     console.log("PLAYER ANSWERS :", playersAnswers);
     router.push("voting");
 });
 
-socket.on("collectVotes", ()=>{
+socket.on("collectVotes", () => {
     const userId = store.userData?.getUserId;
-    store.currentRoom.votingLabel.forEach(answer => {console.log(answer.answers)});
-    const answerstoString = store.currentRoom.votingLabel.map((answer)=>({answer: answer.answers}));
 
-    if(userId){
-        console.log("Sending response : ", answerstoString);
-        socket.emit("answersResponse", userId , answerstoString);
+    const answers: Answer[] = store.currentRoom.votingLabel.map((answer, index) => ({
+        category: store.gameConfig.categories[index],
+        answer: answer,
+    }));
+
+    const response: AnswerStruct = { username: String(store.userData?.getUsername), answers: answers }
+
+    console.log("Response sending : ", response);
+
+    if (userId) {
+        console.log("Sending response : ", response);
+        socket.emit("answersResponse", userId, response);
     }
 });

@@ -1,6 +1,5 @@
 {
   "name": "frontend",
-  "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -10,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@yourproject/shared": "1.0.0",
+    "@scattegoriesgame/shared": "file:../shared",
     "@vue/compiler-sfc": "^3.4.38",
     "@vue/runtime-core": "^3.4.38",
     "@vue/typescript": "^1.8.20",
@@ -37,9 +36,10 @@
   "author": "",
   "license": "ISC",
   "description": "",
-  "workspaces": [
-    "./backend",
-    "./frontend",
-    "./shared"
-  ]
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@scattegoriesgame/shared": ["../shared/src"]
+    }
+  }
 }

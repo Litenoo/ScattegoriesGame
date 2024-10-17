@@ -1,6 +1,6 @@
 import Player from "./Player";
 import { GameConfig, GameConfigInterface, Settings } from "./GameConfig";
-import { AnswerStruct } from "@scattegoriesgame/shared/interfaces/voting";
+import { Answer, AnswerStruct } from "@scattegoriesgame/shared/interfaces/voting";
 import { io } from "../app";
 import { Socket } from "socket.io";
 
@@ -59,7 +59,7 @@ export default class Room {
             io.to(player.socketId).emit("provideCategoryPrompts", categories, playtime, currentLetter);
         });
 
-        return new Promise<void>((resolve)=>{
+        return new Promise<void>((resolve) => {
             setTimeout(() => {
                 resolve();
             }, this.gameConfig.settings.playtime * 1000);
@@ -72,13 +72,13 @@ export default class Room {
             io.to(player.socketId).emit("collectAnswers");
         });
 
-        this._socket?.on("answersResponse", (userId, answers) => {
-            console.log("Received answer : ", userId, answers);
+        this._socket?.on("answersResponse", (userId, response: AnswerStruct) => {
+            console.log("Received answer : ", userId, response); //structure is wrong
             const player = this.findPlayerById(userId);
-            player?.pushAnswears(answers);
+            player?.pushAnswears(response.answers); //undefined
         });
 
-        return new Promise<void>((resolve)=>{
+        return new Promise<void>((resolve) => {
             setTimeout(() => {
                 resolve();
             }, 3000); // make it adjustable
@@ -93,12 +93,12 @@ export default class Room {
         });
 
         //Sending answers to users
-        const categories = this.gameConfig.getCategories;
+        const categories: string[] = this.gameConfig.getCategories;
         this.players.forEach((player) => {
-            io.to(player.socketId).emit("providingVoting", categories, answers);
+            io.to(player.socketId).emit("provideVoting", categories, answers);
         });
 
-        return new Promise<void>((resolve)=>{
+        return new Promise<void>((resolve) => {
             setTimeout(() => {
                 resolve();
             }, this.gameConfig.settings.playtime); // add votingTime property or make it after everyone accepts or even both.
@@ -110,7 +110,7 @@ export default class Room {
             io.to(player.socketId).emit("collectVotes");
         });
 
-        this._socket?.on("votesResponse", (response)=>{
+        this._socket?.on("votesResponse", (response) => {
 
         });
     }
